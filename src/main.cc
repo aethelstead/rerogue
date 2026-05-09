@@ -1,4 +1,4 @@
-
+#include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include <cstdlib>
 #include <memory>
@@ -8,8 +8,6 @@
 
 int main(int argc, char** argv)
 {
-    using clock = std::chrono::high_resolution_clock;
-
     if ((SDL_Init(SDL_INIT_EVERYTHING) != 0) ||
         (IMG_Init(IMG_INIT_PNG | IMG_INIT_WEBP) == 0 || TTF_Init() == -1) ||
         (Mix_Init(MIX_INIT_MP3) == 0 || Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) == -1) ||
@@ -20,33 +18,39 @@ int main(int argc, char** argv)
     }
 
     auto state = std::make_unique<gin::State>();
-    gin::init(*state);
+    state->init();
 
-    double game_dt = 0.0;
-    auto start_time = clock::now();
+    using clock = std::chrono::high_resolution_clock;
+    auto start = clock::now();
+    double dt = 0.0;
+    double avg_fps = 0;
+
     while (true)
     {
-        auto curr_time = clock::now();
-        std::chrono::duration<float> elapsed = curr_time - start_time;
-        start_time = curr_time;
-        state->perf_counter.dt = elapsed.count();
-        state->perf_counter.frame_count++;
-        state->perf_counter.avg_fps = (int)(1.0 / state->perf_counter.dt);
-        state->perf_counter.frame_ms = state->perf_counter.dt * 1000;
+        auto now = clock::now();
+        std::chrono::duration<double> elapsed = now - start;
+        start = now;
 
-        if (gin::events(*state) == false)
-            break;
+        dt = elapsed.count();
+        avg_fps = (1.0 / dt);
 
         auto game_start = clock::now();
-        if (gin::update(*state) == false)
+
+        if (state->events() == false)
+            break;
+        if (state->update(dt) == false)
             break;
 
-        gin::draw(*state);
-        auto game_end = clock::now();
-        std::chrono::duration<float> game_elapsed = game_end - game_start;
-        state->perf_counter.game_ms = game_elapsed.count() * 1000;
+        state->draw();
 
-        SDL_RenderPresent(state->renderer.get());
+        auto game_now = clock::now();
+        std::chrono::duration<double> game_elapsed = game_now - game_start;
+
+        SDL_SetRenderDrawColor(state->gfx.renderer.get(), 0xff, 0xff, 0, 0xff);
+        state->gfx.draw_text(std::format("FPS: {:.0f}", avg_fps), "consola_small", 10, 10);
+        state->gfx.draw_text(std::format("Took: {:.2f}", game_elapsed.count() * 1000), "consola_small", 10, 30);
+
+        SDL_RenderPresent(state->gfx.renderer.get());
     }
 
     Mix_Quit();

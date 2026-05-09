@@ -47,7 +47,7 @@ int keycode_to_vkey(SDL_Keycode code)
 
 namespace gin
 {
-    bool events(State& state)
+    bool State::events()
     {
         SDL_Event e;
         int code = -1;
@@ -58,30 +58,30 @@ namespace gin
             else if (e.type == SDL_KEYDOWN)
             {
                 code = keycode_to_vkey(e.key.keysym.sym);
-                if (state.vkeys.count(code))
-                    state.vkeys[code].down = true;
+                if (input.vkeys.count(code))
+                    input.vkeys[code].down = true;
             }
             else if (e.type == SDL_KEYUP)
             {
                 code = keycode_to_vkey(e.key.keysym.sym);
-                if (state.vkeys.count(code))
-                    state.vkeys[code].down = false;
+                if (input.vkeys.count(code))
+                    input.vkeys[code].down = false;
             }
             else if (e.type == SDL_CONTROLLERBUTTONDOWN)
             {
                 code = e.cbutton.button;
-                if (state.vkeys.count(code))
-                    state.vkeys[code].down = true;
+                if (input.vkeys.count(code))
+                    input.vkeys[code].down = true;
             }
             else if (e.type == SDL_CONTROLLERBUTTONUP)
             {
                 code = e.cbutton.button;
-                if (state.vkeys.count(code))
-                    state.vkeys[code].down = false;
+                if (input.vkeys.count(code))
+                    input.vkeys[code].down = false;
             }
         }
 
-        for (auto& [idx, vkey] : state.vkeys)
+        for (auto& [idx, vkey] : input.vkeys)
         {
             if (vkey.down && !vkey.prev_down)
                 vkey.downFn();
