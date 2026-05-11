@@ -1,13 +1,5 @@
 # Mine
-assets/bgm/
-assets/font/
-assets/img/
-assets/sfx/
-*.tiled-project
-*.tiled-session
-*.Identifier
-aseprite
-tiled
+assets/
 
 ##### Windows
 # Windows thumbnail cache files
@@ -16,7 +8,7 @@ Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
 
-# Dump file
+# Dump file00
 *.stackdump
 
 # Folder config file
