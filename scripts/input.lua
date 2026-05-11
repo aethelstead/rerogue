@@ -56,7 +56,7 @@ function M.bind()
     vkeys[VKEYS.BtnB] = bind_vkey()
     vkeys[VKEYS.BtnX] = bind_vkey()
     vkeys[VKEYS.BtnY] = bind_vkey(
-        function() G.show_overmap() end
+        function() G.toggle_overmap() end
     )
 
     vkeys[VKEYS.DpadUp] = bind_vkey(
@@ -79,6 +79,10 @@ function M.bind()
     vkeys[VKEYS.BtnLeftShldr] = bind_vkey()
     vkeys[VKEYS.BtnRightShldr] = bind_vkey(
         function() G.command_player(G.EntityCommand.Attack) end
+    )
+
+    vkeys[VKEYS.BtnStart] = bind_vkey(
+        function() G.toggle_paused() end
     )
 
     return vkeys

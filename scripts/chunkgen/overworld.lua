@@ -2,7 +2,7 @@ local Tiling = require('scripts._common.tiling')
 
 local M = {}
 
-local TREE_DENSITY = 6
+local TREE_DENSITY = 12
 
 M.genchunk = function (chunkX, chunkY)
     local chunk = {
@@ -26,8 +26,8 @@ M.genchunk = function (chunkX, chunkY)
 
     --G.spawn_entity('rat', (chunkX * G.CHUNK_TILES) + 21, (chunkY * G.CHUNK_TILES) + 21)
     --G.spawn_entity('rat', (chunkX * G.CHUNK_TILES) + 11, (chunkY * G.CHUNK_TILES) + 11)
-    G.spawn_entity('rat', (chunkX * G.CHUNK_TILES), (chunkY * G.CHUNK_TILES) + 5)
-    G.spawn_entity('rat', (chunkX * G.CHUNK_TILES), (chunkY * G.CHUNK_TILES) + 9)
+    --G.spawn_entity('rat', (chunkX * G.CHUNK_TILES), (chunkY * G.CHUNK_TILES) + 5)
+    --G.spawn_entity('rat', (chunkX * G.CHUNK_TILES), (chunkY * G.CHUNK_TILES) + 9)
 
     return chunk
 end

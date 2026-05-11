@@ -7,13 +7,24 @@ function Base:new()
     prev_id = prev_id + 1
     local obj = {
         eid = prev_id,
-        name = '???',
-        type = '???',
-        tile = { x = 0, y = 0 },
-        dir = { x = 0, y = 1 },
-        tileset_key = '???',
-        anim_key = 'idle_south',
+        archetype = '???',
+        position = {
+            tile = { x = 0, y = 0 },
+            dir = { x = 0, y = 1 }
+        },
+        movement = {
+            speed = 1
+        },
+        collision = {
+            is_wall = false
+        },
+        stateful = {
 
+        },
+        sprite = {
+            tileset_key = '???',
+            anim_key = 'idle_south'
+        },
         stats = {
             max_hp = 10,
             max_sp = 10,

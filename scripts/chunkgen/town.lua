@@ -25,10 +25,10 @@ M.genchunk = function (chunkX, chunkY)
     Tiling.blit_tiles(house_tiles, 7, chunk.tiles, 32, start_idx)
 
 
-    G.spawn_entity('villager', 41, 44)
-    G.spawn_entity('villager', 51, 44)
-    G.spawn_entity('villager', 41, 54)
-    G.spawn_entity('villager', 51, 54)
+    --G.spawn_entity('villager', 41, 44)
+    --G.spawn_entity('villager', 51, 44)
+    --G.spawn_entity('villager', 41, 54)
+    --G.spawn_entity('villager', 51, 54)
 
     --G.spawn_entity('rat', 640, 640)
     --G.spawn_entity('rat', 642, 634)

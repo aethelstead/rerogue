@@ -8,10 +8,10 @@ setmetatable(Chest, { __index = Base })
 function Chest:new()
     local obj = Base:new()
 
-    obj.name = 'chest'
-    obj.type = 'chest'
-    obj.tileset_key = 'world'
-    obj.anim_key = 'chest_closed'
+    obj.archetype = 'chest'
+
+    obj.sprite.tileset_key = 'world'
+    obj.sprite.anim_key = 'chest_closed'
 
     --[[obj.interact = function()
         G.push_message('Chest contained X gold pieces')

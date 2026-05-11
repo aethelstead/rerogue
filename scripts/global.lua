@@ -34,20 +34,33 @@ G = {
         Walking = 1,
         Attacking = 2,
         Interacting = 3
+    },
+
+    BtnState = {
+        None = 0,
+        Down = 1,
+        Held = 2,
+        Released = 3
     }
 }
 
--- Set by C++
+-- Overriden by C++
 G.push_message = nil
 G.show_speech = nil
-G.show_overmap = nil
+G.toggle_overmap = nil
+G.toggle_paused = nil
 G.play_sfx = nil
 
-G.spawn_entity = nil
+function G.spawn_entity(archetype, tx, ty) end
+function G.spawn_player(tx, ty) end
 G.reap_entity = nil
-G.command_entity = nil
-G.command_player = nil
+function G.command_entity(eid, cmd) end
+function G.command_player(cmd) end
+
 G.face_opponent = nil
 
 G.set_entity_animation = nil
 G.set_entity_collision = nil
+
+-- game.lua
+

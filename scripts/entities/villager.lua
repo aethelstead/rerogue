@@ -8,9 +8,10 @@ setmetatable(Villager, { __index = Base })
 function Villager:new()
     local obj = Base:new()
     
-    obj.name = 'villager'
-    obj.type = 'villager'
-    obj.tileset_key = 'human'
+    obj.name = '*villager names goes here*'
+    obj.archetype = 'villager'
+    
+    obj.sprite.tileset_key = 'human'
 
     setmetatable(obj, Villager)
     return obj

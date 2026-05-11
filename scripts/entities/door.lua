@@ -8,10 +8,10 @@ setmetatable(Door, { __index = Base })
 function Door:new()
     local obj = Base:new()
 
-    obj.name = 'door'
-    obj.type = 'door'
-    obj.tileset_key = 'world'
-    obj.anim_key = 'door_closed'
+    obj.archetype = 'door'
+
+    obj.sprite.tileset_key = 'world'
+    obj.sprite.anim_key = 'door_closed'
 
     obj.open = false
 
@@ -22,13 +22,14 @@ end
 function Door:interact()
     if self.open then
         self.open = false
-        G.set_entity_animation(self.eid, 'door_closed')
-        G.set_entity_collision(self.eid, true)
+        self.sprite.set_animation('door_closed')
+        self.collision.is_wall = true
     else 
         self.open = true
-        G.set_entity_animation(self.eid, 'door_open')  
-        G.set_entity_collision(self.eid, false)
+        self.sprite.set_animation('door_open')
+        self.collision.is_wall = false
     end
+
     G.play_sfx('assets/sfx/caseOpen.wav')
 end
 

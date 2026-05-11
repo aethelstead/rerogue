@@ -8,9 +8,9 @@ setmetatable(Crow, { __index = Base })
 function Crow:new()
     local obj = Base:new()
 
-    obj.name = 'crow'
-    obj.type = 'crow'
-    obj.tileset_key = 'crow'
+    obj.archetype = 'crow'
+    
+    obj.sprite.tileset_key = 'crow'
 
     setmetatable(obj, Crow)
     return obj

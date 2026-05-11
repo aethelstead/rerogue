@@ -8,9 +8,8 @@ setmetatable(Rat, { __index = Base })
 function Rat:new()
     local obj = Base:new()
 
-    obj.name = 'rat'
-    obj.type = 'rat'
-    obj.tileset_key = 'rat'
+    obj.archetype = 'rat'
+    obj.sprite.tileset_key = 'rat'
 
     obj.stats.max_hp = 5
     obj.hp = obj.stats.max_hp
@@ -25,7 +24,7 @@ end
 
 function Rat:think(opps)
     for idx, opp in ipairs(opps) do
-        if opp.type ~= 'player' then
+        if opp.archetype ~= 'player' then
             break
         end
         
