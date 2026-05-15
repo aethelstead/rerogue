@@ -2,7 +2,6 @@
 #include "tilemap.h"
 #include "../_core/fs.h"
 #include "../_core/geometry.h"
-#include "../lua/lua.h"
 
 namespace gin
 {

@@ -24,24 +24,6 @@ namespace gin
         }
 
         draw_gui();
-
-        //if (opt_speech.has_value())
-        //{
-        //    draw_speech(gfx.renderer.get(), opt_speech.value(), game_glyphs);
-        //}
-
-        //if (show_overmap)
-        //    draw_overmap(gfx.renderer.get());
-
-        //draw_all_messages(gfx.renderer.get(), all_messages, game_glyphs);
-
-        //SDL_SetRenderDrawColor(state.renderer.get(), 0xff, 0xff, 0, 0xff);
-        //draw_text(state.renderer.get(), state.sys_glyphs, std::format("{}", state.perf_counter.avg_fps), 1280 - 20, 5);
-        //draw_text(state.renderer.get(), state.sys_glyphs, std::format("{:.2f}ms", state.perf_counter.game_ms), 1280 - 55, 22);
-
-        //const auto& ppos = state.game.entities.at(state.game.player_eid);
-        //draw_text(state.renderer.get(), state.game_glyphs, std::format("{}x{}", ppos.tile_pos.x, ppos.tile_pos.y), 10, 10);
-        //draw_text(state.renderer.get(), state.game_glyphs, std::format("{}x{}", ppos.next_tile_pos.x, ppos.next_tile_pos.y), 10, 30);
     }
 
     void State::draw_game(const TextureMap& textures, const TilesetMap& tilesets)
@@ -149,7 +131,7 @@ namespace gin
             draw_overmap();
         }
         // ...
-        else if (game.is_paused)
+        else if (gui.show_pause)
         {
             int txtw = gfx.get_text_width("Paused", "metamorphous_large");
             SDL_Rect box{
@@ -216,6 +198,7 @@ namespace gin
         const auto& texture = gfx.textures.at("_overmap");
         SDL_RenderCopy(gfx.renderer.get(), texture.get(), nullptr, &map_rect);
 
+        /*
         const auto& player = game.positions.at(game.player_eid);
         SDL_Rect mp_rect{ 
             map_rect.x + (player.chunk_pos.x * 20), 
@@ -231,6 +214,6 @@ namespace gin
         };
         SDL_SetRenderDrawColor(gfx.renderer.get(), 0xaa, 0xaa, 0, 0xff);
         SDL_RenderDrawRect(gfx.renderer.get(), &mp_rect);
-        SDL_RenderFillRect(gfx.renderer.get(), &mp_rect2);
+        SDL_RenderFillRect(gfx.renderer.get(), &mp_rect2);*/
     }
 }

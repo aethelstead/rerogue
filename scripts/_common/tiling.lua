@@ -7,18 +7,22 @@ M.Type = {
     Floor = 2,
     Wall = 3,
     Sign = 4,
-    Water = 5,
-    Water2 = 6,
-    Tree = 7,
-    Tree2 = 8,
-    Chest = 9,
-    Chest2 = 10,
-    Tree3 = 11,
-    Tree4 = 12,
-    Door = 13,
-    Door2 = 14,
-    Table = 15,
-    Stool = 16
+    Dungeon = 5,
+
+    Water = 9,
+    Water2 = 10,
+    Tree = 11,
+    Tree2 = 12,
+
+    Chest = 17,
+    Chest2 = 18,
+    Tree3 = 19,
+    Tree4 = 20,
+    
+    Door = 25,
+    Door2 = 26,
+    Table = 27,
+    Stool = 28
 }
 
 M.gen_tiles = function (v, w, h)

@@ -1,8 +1,4 @@
-G = {
-    WINDOW_TITLE = 'rerogue',
-    WINDOW_WIDTH = 1280,
-    WINDOW_HEIGHT = 960,
-
+gin = {
     GAMEVIEW_WIDTH = 320,
     GAMEVIEW_HEIGHT = 240,
 
@@ -12,55 +8,82 @@ G = {
     WORLD_CHUNKS = 100,
     WORLD_PIXELS = 51200,
 
-    EntityCommand = {
-        None = 0,
+    init = function() end,
+    update = function() end,
 
-        FaceNorth = 1,
-        FaceEast = 2,
-        FaceSouth = 3,
-        FaceWest = 4,
+    on_game_load = function() end,
+    on_input = function(key, pad) end,
 
-        WalkNorth = 5,
-        WalkEast = 6,
-        WalkSouth = 7,
-        WalkWest = 8,
+    pause_game = function() end,
+    resume_game = function() end,
+    spawn_entity = function(archetype, tx, ty) return {} end,
+    reap_entity = function(eid) end,
+    command_entity = function(eid, cmd) end,
 
-        Attack = 9,
-        Interact = 10,
+    gfx = {
+        get_window_title = function() return '' end,
+        set_window_title = function(title) end,
+        get_window_width = function() return 0 end,
+        get_window_height = function() return 0 end,
+        resize_window = function(w, h) end,
+        get_vsync = function() return false end,
+        set_vsync = function() end,
     },
-
-    EntityState = {
-        Idle = 0,
-        Walking = 1,
-        Attacking = 2,
-        Interacting = 3
+    mix = {
+        MIN_VOL = 0,
+        MAX_VOL = 100,
+        play_sfx = function(path) end,
+        play_bgm = function(path) end,
+        pause_bgm = function() end,
+        resume_bgm = function() end,
+        stop_bgm = function() end,
+        get_master_vol = function() return 0 end,
+        get_sfx_vol = function() return 0 end,
+        get_bgm_vol = function() return 0 end,
+        set_master_vol = function(vol) end,
+        set_sfx_vol = function(vol) end,
+        set_bgm_vol = function(vol) end,
+        mute = function() end,
+        unmute = function() end,
+        toggle_mute = function() end,
     },
-
-    BtnState = {
-        None = 0,
-        Down = 1,
-        Held = 2,
-        Released = 3
+    gui = {
+        toggle_pause = function() end,
+        toggle_overmap = function() end,
+    },
+    io = {
+        KEYBOARD = {
+            KeyTab = 9,
+            KeyEsc = 27,
+            KeySpace = 32,
+            KeyA = 97,
+            KeyD = 100,
+            KeyE = 101,
+            KeyF = 102,
+            KeyM = 109,
+            KeyN = 110,
+            KeyO = 111,
+            KeyP = 112,
+            KeyS = 115,
+            KeyW = 119,
+        },
+        GAMEPAD = {
+            BtnA = 0,
+            BtnB = 1,
+            BtnX = 2,
+            BtnY = 3,
+            BtnBack = 4,
+            BtnGuide = 5,
+            BtnStart = 6,
+            BtnLeftStick = 7,
+            BtnRightStick = 8,
+            BtnLeftShldr = 9,
+            BtnRightShldr = 10,
+            DpadUp = 11,
+            DpadDown = 12,
+            DpadLeft = 13,
+            DpadRight = 14,
+        },
+        key_down = function(key, is_repeat) end,
     }
 }
-
--- Overriden by C++
-G.push_message = nil
-G.show_speech = nil
-G.toggle_overmap = nil
-G.toggle_paused = nil
-G.play_sfx = nil
-
-function G.spawn_entity(archetype, tx, ty) end
-function G.spawn_player(tx, ty) end
-G.reap_entity = nil
-function G.command_entity(eid, cmd) end
-function G.command_player(cmd) end
-
-G.face_opponent = nil
-
-G.set_entity_animation = nil
-G.set_entity_collision = nil
-
--- game.lua
-

@@ -23,17 +23,10 @@
 #include "mixer/mixer.h"
 #include "game/game.h"
 #include "tilemap/tilemap.h"
+#include "gui/gui.h"
 
 namespace gin
 {
-    struct GuiState
-    {
-        Recti view;
-        bool show_overmap = false;
-        std::vector<std::string> all_messages;
-        std::optional<std::string> opt_speech;
-    };
-
     struct State
     {
         TilesetMap tilesets;

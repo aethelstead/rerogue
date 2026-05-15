@@ -8,10 +8,10 @@ setmetatable(Player, { __index = Base })
 function Player:new()
     local obj = Base:new()
 
-    obj.name = '*Name Goes Here*'
+    --obj.name = '*Name Goes Here*'
     obj.archetype = 'player'
 
-    obj.sprite.tileset_key = 'human'
+    obj.tileset_key = 'human'
 
     setmetatable(obj, Player)
     return obj

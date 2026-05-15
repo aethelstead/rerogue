@@ -13,20 +13,14 @@ function Chest:new()
     obj.sprite.tileset_key = 'world'
     obj.sprite.anim_key = 'chest_closed'
 
-    --[[obj.interact = function()
-        G.push_message('Chest contained X gold pieces')
-        G.play_sfx('assets/sfx/caseOpen.wav')
-        G.set_entity_animation(self.eid, 'chest_open')
-    end]]--
-
     setmetatable(obj, Chest)
     return obj
 end
 
 function Chest:interact()
-    G.play_sfx('assets/sfx/caseOpen.wav')
-    G.set_entity_animation(self.eid, 'chest_open')
-    G.push_message('Chest contained X gold pieces')
+    --G.play_sfx('assets/sfx/caseOpen.wav')
+    --G.set_entity_animation(self.eid, 'chest_open')
+    --G.push_message('Chest contained X gold pieces')
 end
 
 return Chest

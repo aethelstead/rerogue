@@ -1,5 +1,5 @@
 --local Overworld = require('scripts.chunkgen.overworld')
-local Town = require('scripts.chunkgen.town')
+--local Town = require('scripts.chunkgen.town')
 local Tiling = require('scripts._common.tiling')
 
 local M = {}
@@ -12,7 +12,7 @@ M.gen_world = function()
             local idx = ((y - 1) * 32) + x
                 M.chunks[idx] = {
                     type = 'sea',
-                    tiles = Tiling.gen_tiles(Tiling.Type.Water, G.CHUNK_TILES, G.CHUNK_TILES)
+                    tiles = Tiling.gen_tiles(Tiling.Type.Water, gin.CHUNK_TILES, gin.CHUNK_TILES)
                 }
         end
     end
@@ -22,7 +22,7 @@ M.gen_world = function()
             local idx = ((y - 1) * 32) + x
                 M.chunks[idx] = {
                     type = 'overworld',
-                    tiles = Tiling.gen_tiles(Tiling.Type.Grass, G.CHUNK_TILES, G.CHUNK_TILES)
+                    tiles = Tiling.gen_tiles(Tiling.Type.Grass, gin.CHUNK_TILES, gin.CHUNK_TILES)
                 }
         end
     end
@@ -36,8 +36,10 @@ M.gen_world = function()
         M.chunks[idx] = Town.genchunk(x, y)
     end]]--
     
-    local idx = ((4 - 1) * 32) + 4
-    M.chunks[idx] = Town.genchunk(4, 4)
+    --local idx = ((4 - 1) * 32) + 4
+    --M.chunks[idx] = Town.genchunk(4, 4)
+
+    --M.chunks[idx].tiles[1] = Tiling.Type.Dungeon
 
     print('Finished world gen')
 end

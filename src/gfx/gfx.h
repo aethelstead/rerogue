@@ -12,6 +12,9 @@
 
 namespace gin
 {
+    inline const int GAMEVIEW_WIDTH = 320;
+    inline const int GAMEVIEW_HEIGHT = 240;
+
     inline const int FONT_SIZE_SMALL = 16;
     inline const int FONT_SIZE_LARGE = 32;
 

@@ -1,3 +1,5 @@
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_video.h>
 #include <memory>
 #include <print>
 #include <functional>
@@ -138,17 +140,45 @@ namespace gin
 
     void GfxState::init()
     {
-        auto& L = get_L();
-        sol::table L_G = L["G"];
+        sol::table L_gfx = get_L()["gin"].get<sol::table>()["gfx"].get<sol::table>();
+        L_gfx["get_window_title"] = [&]()
+            {
+                return SDL_GetWindowTitle(window.get());
+            };
+        L_gfx["set_window_title"] = [&](const char* title)
+            {
+                SDL_SetWindowTitle(window.get(), title);
+                std::println("Set window title");
+            };
+        L_gfx["resize_window"] = [&](int w, int h)
+            {
+                SDL_SetWindowSize(window.get(), w, h);
+            };
+        L_gfx["get_window_width"] = [&]()
+            {
+                int w = 0;
+                int h = 0;
+                SDL_GetWindowSize(window.get(), &w, &h);
+                return w;
+            };
+        L_gfx["get_window_height"] = [&]()
+            {
+                int w = 0;
+                int h = 0;
+                SDL_GetWindowSize(window.get(), &w, &h);
+                return w;
+            };
+        L_gfx["get_vsync"] = [&]()
+            {
+                return true;
+            };
+        L_gfx["set_vsync"] = [&](bool vsync)
+            {
+                int iv = (vsync) ? 1 : 0;
+                SDL_RenderSetVSync(renderer.get(), iv);
+            };
 
-        std::string title = L_G["WINDOW_TITLE"];
-        int ww = L_G["WINDOW_WIDTH"].get_or(0);
-        int wh = L_G["WINDOW_HEIGHT"].get_or(0);
-        int gw = L_G["GAMEVIEW_WIDTH"].get_or(0);
-        int gh = L_G["GAMEVIEW_HEIGHT"].get_or(0);
-
-        window = Window(SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ww, wh, 0), SDL_DestroyWindow);
-        std::println("Created window with size: {}x{}", ww, wh);
+        window = Window(SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0), SDL_DestroyWindow);
 
         renderer = Renderer(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC), SDL_DestroyRenderer);
 
@@ -163,9 +193,9 @@ namespace gin
         auto pxfmt = SDL_GetWindowPixelFormat(window.get());
         textures.try_emplace(
             "_game", 
-            Texture(SDL_CreateTexture(renderer.get(), pxfmt, SDL_TEXTUREACCESS_TARGET, gw, gh), SDL_DestroyTexture)
+            Texture(SDL_CreateTexture(renderer.get(), pxfmt, SDL_TEXTUREACCESS_TARGET, GAMEVIEW_WIDTH, GAMEVIEW_HEIGHT), SDL_DestroyTexture)
         );
-        std::println("Created game texture with size: {}x{}", gw, gh);
+        std::println("Created game texture with size: {}x{}", GAMEVIEW_WIDTH, GAMEVIEW_HEIGHT);
 
         // Add fonts
         glyphsheets.try_emplace("metamorphous_small", create_glyphsheet(renderer.get(), "assets/font/metamorphous.ttf", FONT_SIZE_SMALL));

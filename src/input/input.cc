@@ -17,26 +17,15 @@ namespace gin
             gamepad = Gamepad(SDL_GameControllerOpen(i), SDL_GameControllerClose);
             if (gamepad)
             {
-                //std::println("Opened game controller: {}", SDL_GameControllerName(gamepad.get()));
+                std::println("Opened game controller: {}", SDL_GameControllerName(gamepad.get()));
             }
 
             // @TODO: Only one controller for now... should always be the first?
             break;
         }
 
-        auto& L = get_L();
-        sol::table L_input = L.do_file("scripts/input.lua");
-        sol::table L_vkeys = L_input["bind"]();
-        for (auto [idx, val] : L_vkeys.pairs())
-        {
-            VKey vkey;
-            sol::table L_vkey = val;
-            vkey.downFn = L_vkey["downFn"];
-            vkey.heldFn = L_vkey["heldFn"];
-            vkey.upFn = L_vkey["upFn"];
-
-            vkeys.try_emplace(idx.as<int>(), vkey);
-        }
+        auto L_gin = get_L()["gin"].get<sol::table>();
+        L_io = L_gin["io"].get<sol::table>();
 
         std::println("input was init.");
     }
