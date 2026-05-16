@@ -19,7 +19,6 @@ gin = {
     spawn_entity = function(archetype, tx, ty) return {} end,
     reap_entity = function(eid) end,
     command_entity = function(eid, cmd) end,
-
     gfx = {
         get_window_title = function() return '' end,
         set_window_title = function(title) end,
@@ -27,7 +26,7 @@ gin = {
         get_window_height = function() return 0 end,
         resize_window = function(w, h) end,
         get_vsync = function() return false end,
-        set_vsync = function() end,
+        set_vsync = function(on) end,
     },
     mix = {
         MIN_VOL = 0,
@@ -86,4 +85,10 @@ gin = {
         },
         key_down = function(key, is_repeat) end,
     }
+}
+
+gin.ENT_STATE = {
+    Idle = 0,
+    Walking = 1,
+    Attacking = 2
 }

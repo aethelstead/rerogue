@@ -17,4 +17,8 @@ function Player:new()
     return obj
 end
 
+function Player:interact()
+    print("Player interact")
+end
+
 return Player

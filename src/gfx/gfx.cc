@@ -180,7 +180,7 @@ namespace gin
 
         window = Window(SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0), SDL_DestroyWindow);
 
-        renderer = Renderer(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC), SDL_DestroyRenderer);
+        renderer = Renderer(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED), SDL_DestroyRenderer);
 
         foreach_in_dir("assets/img", [&](const auto& fspath)
         {
@@ -188,7 +188,7 @@ namespace gin
             textures.try_emplace(fspath, std::move(texture));
             std::println("Loaded texture from {}", fspath.stem().string());
         });
-
+        
         // Add the _game texture
         auto pxfmt = SDL_GetWindowPixelFormat(window.get());
         textures.try_emplace(

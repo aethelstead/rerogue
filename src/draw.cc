@@ -98,15 +98,15 @@ namespace gin
 
     void State::draw_sprites(const TextureMap& textures, const TilesetMap& tilesets)
     {
-        for (auto [eid, sprite] : game.sprites)
+        for (auto [eid, ent] : game.ents)
         {
-            if (!sprite.in_view)
-                continue;
+            //if (!sprite.in_view)
+            //    continue;
 
-            const auto& tileset = tilesets.at(sprite.tileset_key);
+            const auto& tileset = tilesets.at(ent.sprite.tileset_key);
             const auto& texture = textures.at(tileset.texture_key);
-            const auto& td = tileset.tiles.at(sprite.anim_id);
-            int frame = td.frames.at(sprite.frameidx) - 1;
+            //const auto& td = tileset.tiles.at(ent.sprite.anim_id);
+            int frame = 0;//td.frames.at(ent.sprite.frameidx) - 1;
 
             SDL_Rect src{ 
                 (frame % tileset.cells_per_row) * TILE_PIXELS, 
@@ -115,8 +115,8 @@ namespace gin
                 TILE_PIXELS
             };
             SDL_Rect dst{
-                sprite.view_pos.x, 
-                sprite.view_pos.y, 
+                ent.sprite.view_pos.x, 
+                ent.sprite.view_pos.y, 
                 TILE_PIXELS, 
                 TILE_PIXELS
             };
@@ -198,22 +198,21 @@ namespace gin
         const auto& texture = gfx.textures.at("_overmap");
         SDL_RenderCopy(gfx.renderer.get(), texture.get(), nullptr, &map_rect);
 
-        /*
-        const auto& player = game.positions.at(game.player_eid);
+        const auto& ent = game.ents.at(game.player_eid);
         SDL_Rect mp_rect{ 
-            map_rect.x + (player.chunk_pos.x * 20), 
-            map_rect.y + (player.chunk_pos.y * 20), 
+            map_rect.x + (ent.phys.chunk_pos.x * 20), 
+            map_rect.y + (ent.phys.chunk_pos.y * 20), 
             20, 
             20 
         };
         SDL_Rect mp_rect2{ 
-            map_rect.x + (player.chunk_pos.x * 20) + 6, 
-            map_rect.y + (player.chunk_pos.y * 20) + 6, 
+            map_rect.x + (ent.phys.chunk_pos.x * 20) + 6, 
+            map_rect.y + (ent.phys.chunk_pos.y * 20) + 6, 
             8, 
             8 
         };
         SDL_SetRenderDrawColor(gfx.renderer.get(), 0xaa, 0xaa, 0, 0xff);
         SDL_RenderDrawRect(gfx.renderer.get(), &mp_rect);
-        SDL_RenderFillRect(gfx.renderer.get(), &mp_rect2);*/
+        SDL_RenderFillRect(gfx.renderer.get(), &mp_rect2);
     }
 }

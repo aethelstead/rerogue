@@ -22,17 +22,15 @@ namespace gin
             player_eid = eid;
         }
 
-        // Add Position
-        Vec2i epos{tile_pos.x * TILE_PIXELS, tile_pos.y * TILE_PIXELS};
-        WorldEntity ent;
-        ent.tile_pos = epos;
-        ent.table = table;
-        ents.try_emplace(eid, ent);
+        // Add Physics
+        EntityPhysics phys(tile_pos, Vec2i::south(), 1);
 
         // Add Sprite
         std::string tileset_key = table["tileset_key"];
         std::string anim_key = table["anim_key"];
-        sprites.try_emplace(eid, tileset_key, anim_key);
+        EntitySprite sprite(tileset_key, anim_key);
+
+        ents.try_emplace(eid, eid, phys, sprite, table);
 
         return table;
     }
@@ -40,7 +38,6 @@ namespace gin
     void GameState::despawn_entity(EntityId eid)
     {
         ents.erase(eid);
-        sprites.erase(eid);
     }
 
     void GameState::init(int w, int h)
@@ -64,60 +61,6 @@ namespace gin
         return (pos.x >= camera.left() && pos.y >= camera.top() && pos.x <= camera.right() && pos.y <= camera.bottom());
     }
 
-    void GameState::update_reaps()
-    {
-        /*
-        for (const auto& eid : sim_ents)
-        {
-            const auto& stateful = statefuls.at(eid);
-            if (stateful.reap)
-                despawn_entity(eid);
-        }*/
-    }
-
-    void GameState::update_ents(double dt)
-    {
-        for (auto& [eid, ent] : ents)
-        {
-            if (in_sim_region(ent.pos))
-            {
-                ent.update();
-                ent.table["tick"](dt);
-            }
-        }
-    }
-
-    void GameState::update_sprites(double dt, const TilesetMap& tilesets)
-    {
-        for (auto& [eid, ent] : ents)
-        {
-            if (!in_sim_region(ent.pos))
-                continue;
-
-            auto& sprite = sprites.at(eid);
-            sprite.in_view = true;
-
-            sprite.view_pos.x = ent.pos.x - camera.x;
-            sprite.view_pos.y = ent.pos.y - camera.y;
-
-            const auto& tileset = tilesets.at(sprite.tileset_key);
-            sprite.anim_id = tileset.anim_map.at(sprite.anim_key);
-            const auto& td = tileset.tiles.at(sprite.anim_id);
-
-            sprite.framems += (dt * 1000);
-            if (sprite.framems >= td.duration)
-            {
-                sprite.framems = 0;
-
-                sprite.frameidx++;
-                if (sprite.frameidx >= td.frames.size())
-                {
-                    sprite.frameidx = 0;
-                }
-            }
-        }
-    }
-
     void GameState::update_camera(const Vec2f& target_pos)
     {
         int target_x = (int)target_pos.x + (TILE_PIXELS / 2);
@@ -133,23 +76,108 @@ namespace gin
     void GameState::update(double dt, const TilesetMap& tilesets)
     {
         const auto& world_tileset = tilesets.at("world");
-
-        /*
-        for (auto& [eid, position] : positions)
+        
+        // Update in_sim
+        for (auto& [eid, ent] : ents)
         {
-            if (!in_sim_region(position.pos))
-                continue;
-        }*/
+            ent.phys.in_sim = in_sim_region(ent.phys.pos);
+        }
 
-        //update_reaps();
-        update_ents(dt);
-        //update_statefuls();
-        //update_collisions(world_tileset);
-        //update_movements();
-        update_sprites(dt, tilesets);
+        // Pre-update entity scripts
+        for (auto& [eid, ent] : ents)
+        {
+            if (!ent.phys.in_sim)
+                continue;
+
+            sol::table L_dir = ent.L_ent["dir"];
+            ent.phys.dir.x = L_dir["x"].get<int>();
+            ent.phys.dir.y = L_dir["y"].get<int>();
+
+            sol::table L_vel = ent.L_ent["vel"];
+            ent.phys.vel.x = L_vel["x"].get<int>();
+            ent.phys.vel.y = L_vel["y"].get<int>();
+
+            ent.state = ent.L_ent["state"].get<int>();
+            if (ent.state == 1 && ent.prev_state == 0 && ent.phys.vel != Vec2i::zero())
+            {
+                ent.phys.next_pos.x = (int)ent.phys.pos.x + (ent.phys.vel.x * TILE_PIXELS);
+                ent.phys.next_pos.y = (int)ent.phys.pos.y + (ent.phys.vel.y * TILE_PIXELS);
+            }
+            ent.prev_state = ent.state;
+        }
+
+        // Update entity positions
+        for (auto& [eid, ent] : ents)
+        {
+            if (!ent.phys.in_sim)
+                continue;
+
+            ent.phys.position();
+        }
+
+        // Check entity collision
+
+        // Move entities
+        for (auto& [eid, ent] : ents)
+        {
+            if (!ent.phys.in_sim)
+                continue;
+
+
+            ent.phys.pos.x += (ent.phys.vel.x) * ent.phys.speed;// * ent.phys.speed;// * dt * 100;// - ent.phys.collide_dir.x) * ent.phys.speed;
+            ent.phys.pos.y += (ent.phys.vel.y) * ent.phys.speed;// * ent.phys.speed;// * dt * 100;// - ent.phys.collide_dir.y) * ent.phys.speed;
+
+            if (ent.state == 1 && 
+                (((int)ent.phys.pos.y > ent.phys.next_pos.y && ent.phys.vel.y > 0) || 
+                ((int)ent.phys.pos.y < ent.phys.next_pos.y && ent.phys.vel.y < 0) ||
+                ((int)ent.phys.pos.x > ent.phys.next_pos.x && ent.phys.vel.x > 0) || 
+                ((int)ent.phys.pos.x < ent.phys.next_pos.x && ent.phys.vel.x < 0)) 
+            )
+            {
+                ent.phys.pos = ent.phys.next_pos;
+                ent.phys.vel = Vec2i::zero();
+                ent.L_ent["set_idle"](ent.L_ent);
+            }
+        }
+
+        // Move scripts
+        for (auto& [eid, ent] : ents)
+        {
+            if (!ent.phys.in_sim)
+                continue;
+
+            ent.L_ent["tick"](ent.L_ent, dt);
+        }
+
+        // Update sprites
+        for (auto& [eid, ent] : ents)
+        {
+            ent.sprite.in_view = ent.phys.in_sim;
+            if (!ent.phys.in_sim)
+                continue;
+
+            ent.sprite.view_pos.x = ent.phys.pos.x - camera.x;
+            ent.sprite.view_pos.y = ent.phys.pos.y - camera.y;
+
+            const auto& tileset = tilesets.at(ent.sprite.tileset_key);
+            ent.sprite.anim_id = tileset.anim_map.at(ent.sprite.anim_key);
+            const auto& td = tileset.tiles.at(ent.sprite.anim_id);
+
+            ent.sprite.framems += (dt * 1000);
+            if (ent.sprite.framems >= td.duration)
+            {
+                ent.sprite.framems = 0;
+
+                ent.sprite.frameidx++;
+                if (ent.sprite.frameidx >= td.frames.size())
+                {
+                    ent.sprite.frameidx = 0;
+                }
+            }
+        }
 
         const auto& player = ents.at(player_eid);
-        update_camera(player.pos);
+        update_camera(player.phys.pos);
     }
 
 } // namespace gin
