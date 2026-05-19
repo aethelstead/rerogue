@@ -86,9 +86,3 @@ gin = {
         key_down = function(key, is_repeat) end,
     }
 }
-
-gin.ENT_STATE = {
-    Idle = 0,
-    Walking = 1,
-    Attacking = 2
-}

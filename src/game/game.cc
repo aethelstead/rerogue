@@ -20,6 +20,7 @@ namespace gin
         if (archetype == "player")
         {
             player_eid = eid;
+            std::println("Set player id: {}", player_eid);
         }
 
         // Add Physics
@@ -27,7 +28,7 @@ namespace gin
 
         // Add Sprite
         std::string tileset_key = table["tileset_key"];
-        std::string anim_key = table["anim_key"];
+        std::string anim_key = "idle_south";//table["anim_key"];
         EntitySprite sprite(tileset_key, anim_key);
 
         ents.try_emplace(eid, eid, phys, sprite, table);
@@ -76,12 +77,11 @@ namespace gin
     void GameState::update(double dt, const TilesetMap& tilesets)
     {
         const auto& world_tileset = tilesets.at("world");
-        
-        // Update in_sim
+
+        // Update entity positions
         for (auto& [eid, ent] : ents)
-        {
-            ent.phys.in_sim = in_sim_region(ent.phys.pos);
-        }
+            if (ent.phys.in_sim = in_sim_region(ent.phys.pos); ent.phys.in_sim)
+                ent.phys.position();
 
         // Pre-update entity scripts
         for (auto& [eid, ent] : ents)
@@ -89,30 +89,20 @@ namespace gin
             if (!ent.phys.in_sim)
                 continue;
 
-            sol::table L_dir = ent.L_ent["dir"];
+            sol::table L_dir = ent.table["dir"];
             ent.phys.dir.x = L_dir["x"].get<int>();
             ent.phys.dir.y = L_dir["y"].get<int>();
 
-            sol::table L_vel = ent.L_ent["vel"];
+            sol::table L_vel = ent.table["vel"];
             ent.phys.vel.x = L_vel["x"].get<int>();
             ent.phys.vel.y = L_vel["y"].get<int>();
 
-            ent.state = ent.L_ent["state"].get<int>();
-            if (ent.state == 1 && ent.prev_state == 0 && ent.phys.vel != Vec2i::zero())
+            // Set the next_pos
+            if (ent.phys.vel != Vec2i::zero() && ent.phys.pos == ent.phys.next_pos)
             {
-                ent.phys.next_pos.x = (int)ent.phys.pos.x + (ent.phys.vel.x * TILE_PIXELS);
-                ent.phys.next_pos.y = (int)ent.phys.pos.y + (ent.phys.vel.y * TILE_PIXELS);
+                ent.phys.next_pos.x = ent.phys.pos.x + (ent.phys.vel.x * TILE_PIXELS);
+                ent.phys.next_pos.y = ent.phys.pos.y + (ent.phys.vel.y * TILE_PIXELS);
             }
-            ent.prev_state = ent.state;
-        }
-
-        // Update entity positions
-        for (auto& [eid, ent] : ents)
-        {
-            if (!ent.phys.in_sim)
-                continue;
-
-            ent.phys.position();
         }
 
         // Check entity collision
@@ -123,31 +113,32 @@ namespace gin
             if (!ent.phys.in_sim)
                 continue;
 
+            ent.phys.pos.x += (ent.phys.vel.x) * ent.phys.speed * (dt * 160);
+            ent.phys.pos.y += (ent.phys.vel.y) * ent.phys.speed * (dt * 160);
 
-            ent.phys.pos.x += (ent.phys.vel.x) * ent.phys.speed;// * ent.phys.speed;// * dt * 100;// - ent.phys.collide_dir.x) * ent.phys.speed;
-            ent.phys.pos.y += (ent.phys.vel.y) * ent.phys.speed;// * ent.phys.speed;// * dt * 100;// - ent.phys.collide_dir.y) * ent.phys.speed;
-
-            if (ent.state == 1 && 
-                (((int)ent.phys.pos.y > ent.phys.next_pos.y && ent.phys.vel.y > 0) || 
-                ((int)ent.phys.pos.y < ent.phys.next_pos.y && ent.phys.vel.y < 0) ||
-                ((int)ent.phys.pos.x > ent.phys.next_pos.x && ent.phys.vel.x > 0) || 
-                ((int)ent.phys.pos.x < ent.phys.next_pos.x && ent.phys.vel.x < 0)) 
-            )
+            if ((ent.phys.pos.y + 1 > ent.phys.next_pos.y && ent.phys.vel.y > 0) || 
+                (ent.phys.pos.y - 1 < ent.phys.next_pos.y && ent.phys.vel.y < 0) ||
+                (ent.phys.pos.x + 1 > ent.phys.next_pos.x && ent.phys.vel.x > 0) || 
+                (ent.phys.pos.x - 1 < ent.phys.next_pos.x && ent.phys.vel.x < 0) )
             {
                 ent.phys.pos = ent.phys.next_pos;
                 ent.phys.vel = Vec2i::zero();
-                ent.L_ent["set_idle"](ent.L_ent);
+
+                sol::table L_vel = ent.table["vel"];
+                L_vel["x"] = 0;
+                L_vel["y"] = 0;
             }
         }
 
+        /*
         // Move scripts
         for (auto& [eid, ent] : ents)
         {
             if (!ent.phys.in_sim)
                 continue;
 
-            ent.L_ent["tick"](ent.L_ent, dt);
-        }
+            ent.table["tick"](ent.table, dt);
+        }*/
 
         // Update sprites
         for (auto& [eid, ent] : ents)

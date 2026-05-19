@@ -24,6 +24,8 @@ namespace gin
         double speed;
         bool in_sim = false;
 
+        EntityPhysics(){}
+
         EntityPhysics(Vec2i tpos, Vec2i d, double spd)
         {
             tile_pos = tpos;
@@ -69,6 +71,8 @@ namespace gin
         int anim_id = 0;
         bool in_view = false;
 
+        EntitySprite(){}
+
         EntitySprite(std::string_view tileset_key, std::string_view anim_key) : tileset_key(tileset_key), anim_key(anim_key) 
         {
             prev_anim_key = anim_key;
@@ -87,9 +91,7 @@ namespace gin
         EntityId eid;
         EntityPhysics phys;
         EntitySprite sprite;
-        sol::table L_ent;
-        int state = 0;
-        int prev_state = 0;
+        sol::table table;
     };
 
     struct GameState

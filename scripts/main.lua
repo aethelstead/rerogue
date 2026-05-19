@@ -47,29 +47,13 @@ end
 function gin.io.pad_down(key, is_repeat)
     
     if key == gin.io.GAMEPAD.DpadUp then
-        if is_repeat then
-            player.walk()
-        else
-            player.go_north()
-        end
+        player.go_north(player)
     elseif key == gin.io.GAMEPAD.DpadRight then
-        if is_repeat then
-            player.walk()
-        else
-            player.go_east()
-        end
+        player.go_east(player)
     elseif key == gin.io.GAMEPAD.DpadDown then
-        if is_repeat then
-            player.walk()
-        else
-            player.go_south()
-        end
+        player.go_south(player)
     elseif key == gin.io.GAMEPAD.DpadLeft then
-        if is_repeat then
-            player.walk()
-        else
-            player.go_west()
-        end
+        player.go_west(player)
     elseif key == gin.io.GAMEPAD.BtnA then
         player.interact(player)
     elseif key == gin.io.GAMEPAD.BtnRightShldr then

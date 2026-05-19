@@ -14,7 +14,7 @@ function Base:new()
         speed = 1,
         is_wall = false,
         tileset_key = '???',
-        state_key = 'idle',
+        state = 'idle',
         dir_key = 'south',
         hp = 10,
         stats = {
@@ -28,137 +28,100 @@ function Base:new()
         }
     }
 
-    obj.state_trans['idle'] = {
-        animation = string.format("idle_"..self.dir_key)
-    }
-    obj.state_trans['walk'] = {
-        animation = string.format("walk_"..self.dir_key)
-    }
-    obj.state_trans['attack'] = {
-        animation = string.format("walk_"..self.dir_key)
-        key_frame_idx = 2,
-        on_key_frame = function(you, them) end
-    }
-    obj.state_trans['interact'] = {
-        animation = "attack",
-        key_frame_idx = 1,
-        on_key_frame = function(you, them) end
-    }
-
     setmetatable(obj, self)
     return obj
 end
 
-function Base:is_idle()
-    return self.state == gin.ENT_STATE.Idle
-end
-
-function Base:set_idle()
-    print('IDLE')
-    self.state = gin.ENT_STATE.Idle
-    self.vel.x = 0
-    self.vel.y = 0
+function Base:set_animation()
+    local key = string.format(self.state..'_'..self.dir_key)
+    print(key)
 end
 
 function Base:go_north()
-    if self.is_idle(self) then
-        if self.dir.y < 0 then
-            -- Set the direction and walk
-            self.dir.x = 0
-            self.dir.y = -1
-            self.vel.x = self.dir.x
-            self.vel.y = self.dir.y
-            self.state = gin.ENT_STATE.Walking
-        else
-            -- Just set the direction
-            self.dir.x = 0
-            self.dir.y = -1
-        end
+    if self.dir.y < 0 then
+        -- Set the direction and walk
+        self.dir.x = 0
+        self.dir.y = -1
+        self.vel.x = self.dir.x
+        self.vel.y = self.dir.y
+        self.state = 'walk'
+        self.set_animation(self)
+    else
+        -- Just set the direction
+        self.dir.x = 0
+        self.dir.y = -1
+        self.state = 'idle'
+        self.dir_key = 'north'
+        self.set_animation(self)
     end
 end
 
 function Base:go_east()
-    if self.is_idle(self) then
-        if self.dir.x > 0 then
-            -- Set the direction and walk
-            self.dir.x = 1
-            self.dir.y = 0
-            self.vel.x = self.dir.x
-            self.vel.y = self.dir.y
-            self.state = gin.ENT_STATE.Walking
-        else
-            -- Just set the direction
-            self.dir.x = 1
-            self.dir.y = 0
-        end
+    if self.dir.x > 0 then
+        -- Set the direction and walk
+        self.dir.x = 1
+        self.dir.y = 0
+        self.vel.x = self.dir.x
+        self.vel.y = self.dir.y
+        self.state = 'walk'
+        self.set_animation(self)
+    else
+        -- Just set the direction
+        self.dir.x = 1
+        self.dir.y = 0
+        self.state = 'idle'
+        self.dir_key = 'east'
+        self.set_animation(self)
     end
 end
 
 function Base:go_south()
-    if self.is_idle(self) then
-        if self.dir.y > 0 then
-            -- Set the direction and walk
-            self.dir.x = 0
-            self.dir.y = 1
-            self.vel.x = self.dir.x
-            self.vel.y = self.dir.y
-            self.state = gin.ENT_STATE.Walking
-        else
-            -- Just set the direction
-            self.dir.x = 0
-            self.dir.y = 1
-        end
+    if self.dir.y > 0 then
+        -- Set the direction and walk
+        self.dir.x = 0
+        self.dir.y = 1
+        self.vel.x = self.dir.x
+        self.vel.y = self.dir.y
+        self.state = 'walk'
+        self.set_animation(self)
+    else
+        -- Just set the direction
+        self.dir.x = 0
+        self.dir.y = 1
+        self.state = 'idle'
+        self.dir_key = 'south'
+        self.set_animation(self)
     end
 end
 
 function Base:go_west()
-    if self.is_idle(self) then
-        if self.dir.x < 0 then
-            -- Set the direction and walk
-            self.dir.x = -1
-            self.dir.y = 0
-            self.vel.x = self.dir.x
-            self.vel.y = self.dir.y
-            self.state = gin.ENT_STATE.Walking
-        else
-            -- Just set the direction
-            self.dir.x = -1
-            self.dir.y = 0
-        end
+    if self.dir.x < 0 then
+        -- Set the direction and walk
+        self.dir.x = -1
+        self.dir.y = 0
+        self.vel.x = self.dir.x
+        self.vel.y = self.dir.y
+        self.state = 'walk'
+        self.set_animation(self)
+    else
+        -- Just set the direction
+        self.dir.x = -1
+        self.dir.y = 0
+        self.state = 'idle'
+        self.dir_key = 'west'
+        self.set_animation(self)
     end
 end
 
 function Base:attack()
     print(self.archetype .. " attack!")
-    self.state = gin.ENT_STATE.Attacking
+    self.state = 'attack'
+    self.set_animation(self)
 end
 
 function Base:tick(dt)
     local ms = math.floor(dt * 1000)
+
 end
-
---[[
-function Base:swing()
-    --G.play_sfx('assets/sfx/dullSwoosh1.wav')
-end
-
-function Base:hit()
-    --G.play_sfx('assets/sfx/click.wav')
-end
-
-function Base:hurt()
-    self.hp = self.hp - 1
-    if self.hp <= 0 then
-        --G.reap_entity(self.eid)
-    end
-end
-
-function Base:interact()
-    --G.push_message('???')
-end
-
-function Base:think(opps)
-
-end]] --
 
 return Base
