@@ -73,16 +73,18 @@ namespace gin
 
         EntitySprite(){}
 
-        EntitySprite(std::string_view tileset_key, std::string_view anim_key) : tileset_key(tileset_key), anim_key(anim_key) 
-        {
-            prev_anim_key = anim_key;
-        }
+        EntitySprite(std::string_view tileset_key) : tileset_key(tileset_key) 
+        {}
 
         void set_animation(std::string_view anim)
         {
+            prev_anim_key = anim_key;
             anim_key = anim;
-            frameidx = 0;
-            framems = 0;
+            if (anim_key != prev_anim_key)
+            {
+                frameidx = 0;
+                framems = 0;
+            }
         }
     };
 

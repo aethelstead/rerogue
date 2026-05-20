@@ -100,13 +100,13 @@ namespace gin
     {
         for (auto [eid, ent] : game.ents)
         {
-            //if (!sprite.in_view)
-            //    continue;
+            if (!ent.sprite.in_view)
+                continue;
 
             const auto& tileset = tilesets.at(ent.sprite.tileset_key);
             const auto& texture = textures.at(tileset.texture_key);
-            //const auto& td = tileset.tiles.at(ent.sprite.anim_id);
-            int frame = 0;//td.frames.at(ent.sprite.frameidx) - 1;
+            const auto& td = tileset.tiles.at(ent.sprite.anim_id);
+            int frame = td.frames.at(ent.sprite.frameidx) - 1;
 
             SDL_Rect src{ 
                 (frame % tileset.cells_per_row) * TILE_PIXELS, 

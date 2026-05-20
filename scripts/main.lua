@@ -20,7 +20,7 @@ function gin.update()
 end
 
 function gin.on_world_load()
-    player = gin.spawn_entity("player", 100, 100)
+    player = gin.spawn_entity("player", 70, 70)
 end
 
 function gin.io.key_down(key, is_repeat)
@@ -42,6 +42,10 @@ function gin.io.key_down(key, is_repeat)
     elseif key == gin.io.KEYBOARD.KeyM then
         gin.gui.toggle_overmap()
     end
+end
+
+function gin.io.key_up(key)
+    player.stop(player)
 end
 
 function gin.io.pad_down(key, is_repeat)

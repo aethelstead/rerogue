@@ -18,7 +18,9 @@ gin = {
     resume_game = function() end,
     spawn_entity = function(archetype, tx, ty) return {} end,
     reap_entity = function(eid) end,
-    command_entity = function(eid, cmd) end,
+
+    set_sprite_animation = function(eid, anim_key) end,
+
     gfx = {
         get_window_title = function() return '' end,
         set_window_title = function(title) end,
@@ -84,5 +86,8 @@ gin = {
             DpadRight = 14,
         },
         key_down = function(key, is_repeat) end,
+        key_up = function(key) end,
+        pad_down = function(btn, is_repeat) end,
+        pad_up = function (btn) end
     }
 }

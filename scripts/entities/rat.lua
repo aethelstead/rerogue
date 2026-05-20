@@ -18,32 +18,4 @@ function Rat:new()
     return obj
 end
 
-function Rat:interact()
-    G.push_message(self.name .. ' ignored you')
-end
-
-function Rat:think(opps)
-    for idx, opp in ipairs(opps) do
-        if opp.archetype ~= 'player' then
-            break
-        end
-        
-        G.face_opponent(self.eid, opp.eid)
-    end
-
-    -- random number between 1 and 4 for direction
-    local rnd = math.random(300) + 1
-    if rnd == 1 then
-        G.command_entity(self.eid, G.EntityCommand.WalkNorth)
-    elseif rnd == 2 then
-        G.command_entity(self.eid, G.EntityCommand.WalkEast)
-    elseif rnd == 3 then
-        G.command_entity(self.eid, G.EntityCommand.WalkSouth)
-    elseif rnd == 4 then
-        G.command_entity(self.eid, G.EntityCommand.WalkWest)
-    else
-        -- Do nothing
-    end
-end
-
 return Rat

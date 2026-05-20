@@ -33,8 +33,7 @@ function Base:new()
 end
 
 function Base:set_animation()
-    local key = string.format(self.state..'_'..self.dir_key)
-    print(key)
+    gin.set_sprite_animation(self.eid, string.format(self.state .. '_' .. self.dir_key))
 end
 
 function Base:go_north()
@@ -113,6 +112,13 @@ function Base:go_west()
     end
 end
 
+function Base:stop()
+    self.vel.x = 0
+    self.vel.y = 0
+    self.state = 'idle'
+    self.set_animation(self)
+end
+
 function Base:attack()
     print(self.archetype .. " attack!")
     self.state = 'attack'
@@ -121,7 +127,6 @@ end
 
 function Base:tick(dt)
     local ms = math.floor(dt * 1000)
-
 end
 
 return Base

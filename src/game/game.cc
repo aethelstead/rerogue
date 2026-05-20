@@ -28,8 +28,10 @@ namespace gin
 
         // Add Sprite
         std::string tileset_key = table["tileset_key"];
-        std::string anim_key = "idle_south";//table["anim_key"];
-        EntitySprite sprite(tileset_key, anim_key);
+        EntitySprite sprite(tileset_key);
+
+        sprite.anim_key = "idle_south";
+        sprite.prev_anim_key = sprite.anim_key;
 
         ents.try_emplace(eid, eid, phys, sprite, table);
 
@@ -53,6 +55,13 @@ namespace gin
                 return spawn_entity(Vec2i(tx, ty), archetype);
             };
         L_gin["reap_entity"] = [&](EntityId eid) {  };
+        L_gin["set_sprite_animation"] = [&](EntityId eid, const char* anim_key) 
+            {
+                auto& ent = ents.at(eid);
+                ent.sprite.set_animation(anim_key);
+
+                std::println("{}", anim_key);
+            };
 
         std::println("game was init.");
     }
@@ -123,10 +132,9 @@ namespace gin
             {
                 ent.phys.pos = ent.phys.next_pos;
                 ent.phys.vel = Vec2i::zero();
-
-                sol::table L_vel = ent.table["vel"];
-                L_vel["x"] = 0;
-                L_vel["y"] = 0;
+                ent.table["x"] = 0;
+                ent.table["y"] = 0;
+                //ent.table["stop"](ent.table);
             }
         }
 
@@ -151,6 +159,10 @@ namespace gin
             ent.sprite.view_pos.y = ent.phys.pos.y - camera.y;
 
             const auto& tileset = tilesets.at(ent.sprite.tileset_key);
+
+            //if (!tileset.anim_map.count(ent.sprite.anim_key))
+            //    continue;
+
             ent.sprite.anim_id = tileset.anim_map.at(ent.sprite.anim_key);
             const auto& td = tileset.tiles.at(ent.sprite.anim_id);
 

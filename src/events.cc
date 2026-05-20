@@ -26,6 +26,7 @@ namespace gin
                     input.L_io["key_down"](e.key.keysym.sym, false);
                     break;
                 case SDL_KEYUP:
+                    input.L_io["key_up"](e.key.keysym.sym);
                     break;
                 case SDL_CONTROLLERBUTTONDOWN:
                     input.L_io["pad_down"](e.cbutton.button, false);
