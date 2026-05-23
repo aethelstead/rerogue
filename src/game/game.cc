@@ -177,9 +177,8 @@ namespace gin
                 (ent.phys.pos.x + 1 > ent.phys.next_pos.x && ent.phys.vel.x > 0) || 
                 (ent.phys.pos.x - 1 < ent.phys.next_pos.x && ent.phys.vel.x < 0) )
             {
-                // @TODO: This is resetting the walk animation too soon!
                 ent.phys.pos = ent.phys.next_pos;
-                ent.table["idle"](ent.table);
+                ent.table["stop"](ent.table);
             }
         }
 

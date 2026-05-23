@@ -94,6 +94,7 @@ function Base:walk()
         self.vel.y = self.dir.y
         self.state = 'walk'
         self.set_animation(self)
+        self.set_busy(self, 1)
     end
 end
 
@@ -104,7 +105,6 @@ function Base:go_north()
         self.face_north(self)
     end
 end
-
 function Base:go_east()
     if self.dir.x > 0 then
         self.walk(self)
@@ -112,7 +112,6 @@ function Base:go_east()
         self.face_east(self)
     end
 end
-
 function Base:go_south()
     if self.dir.y > 0 then
         self.walk(self)
@@ -120,7 +119,6 @@ function Base:go_south()
         self.face_south(self)
     end
 end
-
 function Base:go_west()
     if self.dir.x < 0 then
         self.walk(self)
@@ -130,12 +128,9 @@ function Base:go_west()
 end
 
 function Base:stop()
-    self.vel.x = 0
-    self.vel.y = 0
-end
-
-function Base:idle()
-    if self.vel.x ~= 0 or self.vel.y ~= 0 then
+    if not self.is_busy(self) then
+        self.vel.x = 0
+        self.vel.y = 0
         self.state = 'idle'
         self.set_animation(self)
     end

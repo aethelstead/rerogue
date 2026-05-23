@@ -45,7 +45,6 @@ function gin.io.key_down(key, is_repeat)
 end
 
 function gin.io.key_up(key)
-    player.stop(player)
 end
 
 function gin.io.pad_down(key, is_repeat)
@@ -70,7 +69,6 @@ function gin.io.pad_down(key, is_repeat)
 end
 
 function gin.io.pad_up(key)
-    player.stop(player)
 end
 
 return M
