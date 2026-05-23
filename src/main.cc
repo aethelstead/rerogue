@@ -50,6 +50,12 @@ int main(int argc, char** argv)
         state->gfx.draw_text(std::format("FPS: {:.0f}", avg_fps), "consola_small", 10, 10);
         state->gfx.draw_text(std::format("Took: {:.2f}", game_elapsed.count() * 1000), "consola_small", 10, 30);
 
+        const auto& player = state->game.ents.at(state->game.player_eid);
+        const auto& ppos = player.phys.pos;
+        const auto& npos = player.phys.next_pos;
+        state->gfx.draw_text(std::format("PlayerPos:\t\t{:.2f}, {:.2f}", ppos.x, ppos.y), "consola_small", 10, 50);
+        state->gfx.draw_text(std::format("NextPos:\t\t\t{:.2f}, {:.2f}", npos.x, npos.y), "consola_small", 10, 70);
+
         SDL_RenderPresent(state->gfx.renderer.get());
     }
 

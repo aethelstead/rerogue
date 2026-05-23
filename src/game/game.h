@@ -23,6 +23,7 @@ namespace gin
         Vec2i collide_dir;
         double speed;
         bool in_sim = false;
+        bool is_ready = true;
 
         EntityPhysics(){}
 

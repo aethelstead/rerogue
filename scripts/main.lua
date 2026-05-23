@@ -20,11 +20,11 @@ function gin.update()
 end
 
 function gin.on_world_load()
-    player = gin.spawn_entity("player", 70, 70)
+    player = gin.spawn_entity("player", 10, 10)
 end
 
 function gin.io.key_down(key, is_repeat)
-    
+
     if key == gin.io.KEYBOARD.KeyW then
         player.go_north(player)
     elseif key == gin.io.KEYBOARD.KeyD then
@@ -37,15 +37,15 @@ function gin.io.key_down(key, is_repeat)
         player.interact(player)
     elseif key == gin.io.KEYBOARD.KeySpace then
         player.attack(player)
-    elseif key == gin.io.KEYBOARD.KeyP then
+    elseif key == gin.io.KEYBOARD.KeyP and not is_repeat then
         gin.gui.toggle_pause()
-    elseif key == gin.io.KEYBOARD.KeyM then
+    elseif key == gin.io.KEYBOARD.KeyM and not is_repeat then
         gin.gui.toggle_overmap()
     end
 end
 
 function gin.io.key_up(key)
-    player.stop(player)
+    
 end
 
 function gin.io.pad_down(key, is_repeat)
@@ -62,9 +62,9 @@ function gin.io.pad_down(key, is_repeat)
         player.interact(player)
     elseif key == gin.io.GAMEPAD.BtnRightShldr then
         player.attack(player)
-    elseif key == gin.io.GAMEPAD.BtnStart then
+    elseif key == gin.io.GAMEPAD.BtnStart and not is_repeat then
         gin.gui.toggle_pause()
-    elseif key == gin.io.GAMEPAD.BtnY then
+    elseif key == gin.io.GAMEPAD.BtnY and not is_repeat then
         gin.gui.toggle_overmap()
     end
 end

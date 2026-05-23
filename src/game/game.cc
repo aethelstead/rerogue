@@ -59,8 +59,6 @@ namespace gin
             {
                 auto& ent = ents.at(eid);
                 ent.sprite.set_animation(anim_key);
-
-                std::println("{}", anim_key);
             };
 
         std::println("game was init.");
@@ -107,14 +105,31 @@ namespace gin
             ent.phys.vel.y = L_vel["y"].get<int>();
 
             // Set the next_pos
-            if (ent.phys.vel != Vec2i::zero() && ent.phys.pos == ent.phys.next_pos)
+            if (ent.phys.vel != Vec2i::zero() && ent.phys.is_ready)
             {
+                ent.phys.is_ready = false;
+
                 ent.phys.next_pos.x = ent.phys.pos.x + (ent.phys.vel.x * TILE_PIXELS);
                 ent.phys.next_pos.y = ent.phys.pos.y + (ent.phys.vel.y * TILE_PIXELS);
             }
         }
 
         // Check entity collision
+        for (auto& [eid, ent] : ents)
+        {
+            if (!ent.phys.in_sim)
+                continue;
+
+            // Reset the collision from last frame
+            ent.phys.collide_dir = Vec2i::zero();
+
+            // Map bounds checking
+            if (ent.phys.next_pos.x < 0)
+            {
+                ent.phys.next_pos = ent.phys.pos;
+                ent.phys.collide_dir.x = -ent.phys.vel.x;
+            }
+        }
 
         // Move entities
         for (auto& [eid, ent] : ents)
@@ -122,31 +137,29 @@ namespace gin
             if (!ent.phys.in_sim)
                 continue;
 
-            ent.phys.pos.x += (ent.phys.vel.x) * ent.phys.speed * (dt * 160);
-            ent.phys.pos.y += (ent.phys.vel.y) * ent.phys.speed * (dt * 160);
+            ent.phys.pos.x += (ent.phys.vel.x + ent.phys.collide_dir.x) * ent.phys.speed;
+            ent.phys.pos.y += (ent.phys.vel.y + ent.phys.collide_dir.y) * ent.phys.speed;
 
             if ((ent.phys.pos.y + 1 > ent.phys.next_pos.y && ent.phys.vel.y > 0) || 
                 (ent.phys.pos.y - 1 < ent.phys.next_pos.y && ent.phys.vel.y < 0) ||
                 (ent.phys.pos.x + 1 > ent.phys.next_pos.x && ent.phys.vel.x > 0) || 
                 (ent.phys.pos.x - 1 < ent.phys.next_pos.x && ent.phys.vel.x < 0) )
             {
+                ent.phys.is_ready = true;
                 ent.phys.pos = ent.phys.next_pos;
                 ent.phys.vel = Vec2i::zero();
-                ent.table["x"] = 0;
-                ent.table["y"] = 0;
-                //ent.table["stop"](ent.table);
+                ent.table["stop"](ent.table);
             }
+
+            /*
+            if (ent.phys.collide_dir.x > 0)
+            {
+                ent.phys.is_ready = true;
+                ent.phys.pos = ent.phys.next_pos;
+                ent.phys.vel = Vec2i::zero();
+                ent.table["stop"](ent.table);
+            }*/
         }
-
-        /*
-        // Move scripts
-        for (auto& [eid, ent] : ents)
-        {
-            if (!ent.phys.in_sim)
-                continue;
-
-            ent.table["tick"](ent.table, dt);
-        }*/
 
         // Update sprites
         for (auto& [eid, ent] : ents)

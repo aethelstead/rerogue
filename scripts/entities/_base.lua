@@ -38,15 +38,11 @@ end
 
 function Base:go_north()
     if self.dir.y < 0 then
-        -- Set the direction and walk
-        self.dir.x = 0
-        self.dir.y = -1
         self.vel.x = self.dir.x
         self.vel.y = self.dir.y
         self.state = 'walk'
         self.set_animation(self)
     else
-        -- Just set the direction
         self.dir.x = 0
         self.dir.y = -1
         self.state = 'idle'
@@ -57,15 +53,11 @@ end
 
 function Base:go_east()
     if self.dir.x > 0 then
-        -- Set the direction and walk
-        self.dir.x = 1
-        self.dir.y = 0
         self.vel.x = self.dir.x
         self.vel.y = self.dir.y
         self.state = 'walk'
         self.set_animation(self)
     else
-        -- Just set the direction
         self.dir.x = 1
         self.dir.y = 0
         self.state = 'idle'
@@ -76,15 +68,11 @@ end
 
 function Base:go_south()
     if self.dir.y > 0 then
-        -- Set the direction and walk
-        self.dir.x = 0
-        self.dir.y = 1
         self.vel.x = self.dir.x
         self.vel.y = self.dir.y
         self.state = 'walk'
         self.set_animation(self)
     else
-        -- Just set the direction
         self.dir.x = 0
         self.dir.y = 1
         self.state = 'idle'
@@ -95,15 +83,11 @@ end
 
 function Base:go_west()
     if self.dir.x < 0 then
-        -- Set the direction and walk
-        self.dir.x = -1
-        self.dir.y = 0
         self.vel.x = self.dir.x
         self.vel.y = self.dir.y
         self.state = 'walk'
         self.set_animation(self)
     else
-        -- Just set the direction
         self.dir.x = -1
         self.dir.y = 0
         self.state = 'idle'
@@ -115,8 +99,8 @@ end
 function Base:stop()
     self.vel.x = 0
     self.vel.y = 0
-    self.state = 'idle'
-    self.set_animation(self)
+    --self.state = 'idle'
+    --self.set_animation(self)
 end
 
 function Base:attack()
