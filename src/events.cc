@@ -8,10 +8,12 @@ namespace gin
     bool State::events()
     {
         // Reset map of keys from the last frame.
+        input.up_keys.clear();
         input.prev_keys.clear();
         input.prev_keys.insert(input.keys.begin(), input.keys.end());
 
         // Reset map of (gamepad) buttons from the last frame.
+        input.up_btns.clear();
         input.prev_btns.clear();
         input.prev_btns.insert(input.btns.begin(), input.btns.end());
 
@@ -30,12 +32,14 @@ namespace gin
                     break;
                 case SDL_KEYUP:
                     input.keys.erase(e.key.keysym.sym);   
+                    input.up_keys.emplace(e.key.keysym.sym);
                     break;
                 case SDL_CONTROLLERBUTTONDOWN:
                     input.btns.emplace(e.cbutton.button);
                     break;
                 case SDL_CONTROLLERBUTTONUP:
                     input.btns.erase(e.cbutton.button);
+                    input.up_btns.emplace(e.key.keysym.sym);
                     break;
             }
         }
@@ -46,11 +50,19 @@ namespace gin
             bool is_repeat = input.prev_keys.count(key);
             input.L_io["key_down"](key, is_repeat);
         }
+        for (int key : input.up_keys)
+        {
+            input.L_io["key_up"](key);
+        }
         // ... then for input
         for (int btn : input.btns)
         {
             bool is_repeat = input.prev_btns.count(btn);
             input.L_io["pad_down"](btn, is_repeat);
+        }
+        for (int btn : input.up_btns)
+        {
+            input.L_io["pad_up"](btn);
         }
 
         return result;

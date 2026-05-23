@@ -16,9 +16,11 @@ namespace gin
         Gamepad gamepad;
         std::set<int> prev_keys;
         std::set<int> keys;
+        std::set<int> up_keys;
         
         std::set<int> prev_btns;
         std::set<int> btns;
+        std::set<int> up_btns;
 
         sol::table L_io;
 

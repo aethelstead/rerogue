@@ -20,6 +20,8 @@ gin = {
     reap_entity = function(eid) end,
 
     set_sprite_animation = function(eid, anim_key) end,
+    set_phys_busy = function (eid, nframes) end,
+    is_phys_busy = function(eid) return false end,
 
     gfx = {
         get_window_title = function() return '' end,

@@ -60,6 +60,16 @@ namespace gin
                 auto& ent = ents.at(eid);
                 ent.sprite.set_animation(anim_key);
             };
+        L_gin["set_phys_busy"] = [&](EntityId eid, int nframes)
+            {
+                auto& ent = ents.at(eid);
+                ent.phys.busy_frames = nframes;
+            };
+        L_gin["is_phys_busy"] = [&](EntityId eid)
+            {
+                auto& ent = ents.at(eid);
+                return (ent.phys.busy_frames > 0);
+            };
 
         std::println("game was init.");
     }
@@ -104,11 +114,10 @@ namespace gin
             ent.phys.vel.x = L_vel["x"].get<int>();
             ent.phys.vel.y = L_vel["y"].get<int>();
 
-            // Set the next_pos
-            if (ent.phys.vel != Vec2i::zero() && ent.phys.is_ready)
+            // Only true when the velocity is set
+            if (ent.phys.pos == ent.phys.next_pos)
             {
-                ent.phys.is_ready = false;
-
+                // Set the next_pos
                 ent.phys.next_pos.x = ent.phys.pos.x + (ent.phys.vel.x * TILE_PIXELS);
                 ent.phys.next_pos.y = ent.phys.pos.y + (ent.phys.vel.y * TILE_PIXELS);
             }
@@ -124,10 +133,33 @@ namespace gin
             ent.phys.collide_dir = Vec2i::zero();
 
             // Map bounds checking
-            if (ent.phys.next_pos.x < 0)
+            if ((ent.phys.next_pos.x < 0 && ent.phys.vel.x < 0) ||
+                (ent.phys.next_pos.y < 0 && ent.phys.vel.y < 0) ||
+                (ent.phys.next_pos.x > WORLD_PIXELS - TILE_PIXELS && ent.phys.vel.x > 0) ||
+                (ent.phys.next_pos.y > WORLD_PIXELS - TILE_PIXELS && ent.phys.vel.y > 0))
             {
                 ent.phys.next_pos = ent.phys.pos;
-                ent.phys.collide_dir.x = -ent.phys.vel.x;
+                
+                ent.phys.collide_dir.x = ent.phys.dir.x * -1;
+                ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+            }
+
+            // Wall tile checking
+            Vec2i ntile = ent.phys.tile_pos + ent.phys.dir;
+            const auto& opt_chunk = chunks[ent.phys.chunk_pos.x][ent.phys.chunk_pos.y];
+            if (opt_chunk.has_value())
+            {
+                const auto& chunk = opt_chunk.value();
+                Vec2i nltile{ntile.x % CHUNK_TILES, ntile.y % CHUNK_TILES};
+                int tile_id = chunk.tiles[nltile.x][nltile.y];
+                const auto& td = world_tileset.tiles.at(tile_id);
+                if (td.is_wall)
+                {
+                    ent.phys.next_pos = ent.phys.pos;
+
+                    ent.phys.collide_dir.x = ent.phys.dir.x * -1;
+                    ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+                }
             }
         }
 
@@ -145,20 +177,10 @@ namespace gin
                 (ent.phys.pos.x + 1 > ent.phys.next_pos.x && ent.phys.vel.x > 0) || 
                 (ent.phys.pos.x - 1 < ent.phys.next_pos.x && ent.phys.vel.x < 0) )
             {
-                ent.phys.is_ready = true;
+                // @TODO: This is resetting the walk animation too soon!
                 ent.phys.pos = ent.phys.next_pos;
-                ent.phys.vel = Vec2i::zero();
-                ent.table["stop"](ent.table);
+                ent.table["idle"](ent.table);
             }
-
-            /*
-            if (ent.phys.collide_dir.x > 0)
-            {
-                ent.phys.is_ready = true;
-                ent.phys.pos = ent.phys.next_pos;
-                ent.phys.vel = Vec2i::zero();
-                ent.table["stop"](ent.table);
-            }*/
         }
 
         // Update sprites
@@ -190,6 +212,17 @@ namespace gin
                     ent.sprite.frameidx = 0;
                 }
             }
+        }
+
+
+        for (auto& [eid, ent] : ents)
+        {
+            if (!ent.phys.in_sim)
+                continue;
+
+            ent.phys.busy_frames = std::max(0, --ent.phys.busy_frames);
+            if (ent.phys.busy_frames == 0)
+                ent.table["ready"] = true;
         }
 
         const auto& player = ents.at(player_eid);
