@@ -1,7 +1,7 @@
-#include <print>
 #include "tilemap.h"
 #include "../_core/fs.h"
 #include "../_core/geometry.h"
+#include <print>
 
 namespace gin
 {
@@ -73,30 +73,38 @@ namespace gin
             {
                 int idx = (cy * WORLD_CHUNKS) + cx;
                 sol::table L_chunk = L_chunks[idx + 1];
+                sol::table L_layers = L_chunk["layers"];
 
                 WorldChunk chunk;
                 chunk.type = L_chunk["type"];
 
-                int i = 0;
-                int j = 0;
-                sol::table L_tiles = L_chunk["tiles"];
-                for (const auto& [_, tl] : L_tiles)
+                for (const auto& [_, v] : L_layers)
                 {
-                    int tval = tl.as<int>();
-                    chunk.tiles[i][j] = tval;
-                    const auto& td = world_tileset.tiles.at(tval);
-                    if (td.entity_key.has_value())
+                    int i = 0;
+                    int j = 0;
+                    TileLayer layer;
+                    sol::table L_tiles = v.as<sol::table>();
+                    for (const auto& [_, tl] : L_tiles)
                     {
-                        Vec2i tile_pos{(cx * CHUNK_TILES) + i, (cy * CHUNK_TILES) + j};
-                        //game.spawn_entity(tile_pos, td.entity_key.value());
-                    }
+                        int idx = (j * CHUNK_TILES) + i;
+                        int tval = tl.as<int>();
+                        layer[idx] = tval;
+                        
+                        /*const auto& td = world_tileset.tiles.at(tval);
+                        if (td.entity_key.has_value())
+                        {
+                            Vec2i tile_pos{(cx * CHUNK_TILES) + i, (cy * CHUNK_TILES) + j};
+                            // game.spawn_entity(tile_pos, td.entity_key.value());
+                        }*/
 
-                    i++;
-                    if (i >= CHUNK_TILES)
-                    {
-                        i = 0;
-                        j++;
+                        i++;
+                        if (i >= CHUNK_TILES)
+                        {
+                            i = 0;
+                            j++;
+                        }
                     }
+                    chunk.tiles.emplace_back(layer);
                 }
 
                 chunks[cx][cy] = chunk;

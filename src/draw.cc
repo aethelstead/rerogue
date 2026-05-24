@@ -1,5 +1,6 @@
 #include "gfx/gfx.h"
 #include "gin.h"
+#include "tilemap/tilemap.h"
 #include <SDL2/SDL_render.h>
 
 namespace gin
@@ -43,8 +44,13 @@ namespace gin
                     const auto& chunk = game.chunks[chunkpos.x][chunkpos.y];
                     if (chunk.has_value())
                     {
-                        Vec2i topleft{ x * CHUNK_PIXELS, y * CHUNK_PIXELS };
-                        draw_chunk_tiles(topleft, chunk.value(), texture, tileset);
+                        // Draw all layers
+                        int lyIdx = 0;
+                        for (const auto& layer : chunk->tiles)
+                        {
+                            Vec2i topleft{ x * CHUNK_PIXELS, y * CHUNK_PIXELS };
+                            draw_chunk_tiles(topleft, chunk.value(), texture, tileset, lyIdx++);
+                        }
                     }
                 }
 
@@ -57,7 +63,7 @@ namespace gin
         draw_sprites(textures, tilesets);
     }
 
-    void State::draw_chunk_tiles(Vec2i& topleft, const WorldChunk& chunk, const Texture& texture, const Tileset& tileset)
+    void State::draw_chunk_tiles(Vec2i& topleft, const WorldChunk& chunk, const Texture& texture, const Tileset& tileset, int lyIdx)
     {
         Vec2i start{
             0,
@@ -72,7 +78,12 @@ namespace gin
         {
             for (int x = start.x; x < end.x; ++x)
             {
-                const auto& td = tileset.tiles.at(chunk.tiles[x][y]);
+                int idx = (y * CHUNK_TILES) + x;
+                int tv = chunk.tiles[lyIdx][idx];
+                if (tv <= 0)
+                    continue;
+
+                const auto& td = tileset.tiles.at(tv);
                 // Don't render tile entities as tiles
                 if (td.entity_key.has_value())
                     continue;

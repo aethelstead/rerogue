@@ -218,6 +218,7 @@ namespace gin
                 size_t idx = (y * surface->pitch / 4) + x;
 
                 uint32_t colour = 0xff000000; // Black
+                /*
                 const auto& opt_chunk = chunks[x][y];
                 if (opt_chunk.has_value())
                 {
@@ -229,7 +230,7 @@ namespace gin
                         colour = 0xff444444; // Grey
                     else if (chunk.type == "sea")
                         colour = 0xffaa0000; // Blue
-                }
+                }*/
 
                 pixels[idx] = colour;
             }

@@ -144,6 +144,7 @@ namespace gin
                 ent.phys.collide_dir.y = ent.phys.dir.y * -1;
             }
 
+            /*
             // Wall tile checking
             Vec2i ntile = ent.phys.tile_pos + ent.phys.dir;
             const auto& opt_chunk = chunks[ent.phys.chunk_pos.x][ent.phys.chunk_pos.y];
@@ -160,7 +161,7 @@ namespace gin
                     ent.phys.collide_dir.x = ent.phys.dir.x * -1;
                     ent.phys.collide_dir.y = ent.phys.dir.y * -1;
                 }
-            }
+            }*/
         }
 
         // Move entities

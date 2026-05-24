@@ -45,7 +45,7 @@ namespace gin
         
         void draw();
         void draw_game(const TextureMap& textures, const TilesetMap& tilesets);
-        void draw_chunk_tiles(Vec2i& topleft, const WorldChunk& chunk, const Texture& texture, const Tileset& tileset);
+        void draw_chunk_tiles(Vec2i& topleft, const WorldChunk& chunk, const Texture& texture, const Tileset& tileset, int lyIdx);
         void draw_sprites(const TextureMap& textures, const TilesetMap& tilesets);
 
         void draw_gui();

@@ -9,14 +9,17 @@
 
 namespace gin
 {
-    inline const int TILE_PIXELS = 16;
-    inline const int CHUNK_TILES = 32;
-    inline const int CHUNK_PIXELS = CHUNK_TILES * TILE_PIXELS;
-    inline const int WORLD_CHUNKS = 32;
-    inline const int WORLD_TILES = WORLD_CHUNKS * CHUNK_TILES;
-    inline const int WORLD_PIXELS = WORLD_CHUNKS * CHUNK_PIXELS;
+    constexpr inline const int TILE_PIXELS = 16;
+    constexpr inline const int CHUNK_TILES = 32;
+    constexpr inline const int CHUNK_PIXELS = CHUNK_TILES * TILE_PIXELS;
+    constexpr inline const int WORLD_CHUNKS = 32;
+    constexpr inline const int WORLD_TILES = WORLD_CHUNKS * CHUNK_TILES;
+    constexpr inline const int WORLD_PIXELS = WORLD_CHUNKS * CHUNK_PIXELS;
+
+    constexpr inline const int TILEMAP_LAYERS = WORLD_CHUNKS * CHUNK_PIXELS;
     
-    using Tilemap = std::array<std::array<int, CHUNK_TILES>, CHUNK_TILES>;
+    using TileLayer = std::array<int, 1024>;
+    using Tilemap = std::vector<TileLayer>;
 
     struct TileData
     {
