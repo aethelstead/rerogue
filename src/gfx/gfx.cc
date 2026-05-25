@@ -223,7 +223,7 @@ namespace gin
                 if (opt_chunk.has_value())
                 {
                     auto& chunk = opt_chunk.value();
-                    int v = chunk.tiles[0][0];
+                    int v = chunk.layers[0][0];
                     if (chunk.type == "overworld")
                         colour = 0xff006600; // Forest green
                     else if (chunk.type == "town")

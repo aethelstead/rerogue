@@ -19,7 +19,6 @@ namespace gin
     constexpr inline const int TILEMAP_LAYERS = WORLD_CHUNKS * CHUNK_PIXELS;
     
     using TileLayer = std::array<int, 1024>;
-    using Tilemap = std::vector<TileLayer>;
 
     struct TileData
     {
@@ -46,12 +45,12 @@ namespace gin
 
     struct WorldChunk
     {
-        Tilemap tiles;
+        std::vector<TileLayer> layers;
         std::string type;
 
         WorldChunk() {}
 
-        WorldChunk(Tilemap& t) : tiles(t) {}
+        WorldChunk(std::vector<TileLayer>& t) : layers(t) {}
     };
 
     using ChunkMap = std::array<std::array<std::optional<WorldChunk>, WORLD_CHUNKS>, WORLD_CHUNKS>;

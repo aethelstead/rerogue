@@ -46,7 +46,7 @@ namespace gin
                     {
                         // Draw all layers
                         int lyIdx = 0;
-                        for (const auto& layer : chunk->tiles)
+                        for (const auto& layer : chunk->layers)
                         {
                             Vec2i topleft{ x * CHUNK_PIXELS, y * CHUNK_PIXELS };
                             draw_chunk_tiles(topleft, chunk.value(), texture, tileset, lyIdx++);
@@ -79,7 +79,7 @@ namespace gin
             for (int x = start.x; x < end.x; ++x)
             {
                 int idx = (y * CHUNK_TILES) + x;
-                int tv = chunk.tiles[lyIdx][idx];
+                int tv = chunk.layers[lyIdx][idx];
                 if (tv <= 0)
                     continue;
 

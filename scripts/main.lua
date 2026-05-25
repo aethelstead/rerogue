@@ -20,7 +20,7 @@ function gin.update()
 end
 
 function gin.on_world_load()
-    player = gin.spawn_entity("player", 68, 68)
+    player = gin.spawn_entity("player", 70, 70)
 end
 
 function gin.io.key_down(key, is_repeat)

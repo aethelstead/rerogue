@@ -104,7 +104,7 @@ namespace gin
                             j++;
                         }
                     }
-                    chunk.tiles.emplace_back(layer);
+                    chunk.layers.emplace_back(layer);
                 }
 
                 chunks[cx][cy] = chunk;

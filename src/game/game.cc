@@ -132,6 +132,7 @@ namespace gin
             // Reset the collision from last frame
             ent.phys.collide_dir = Vec2i::zero();
 
+            /*
             // Map bounds checking
             if ((ent.phys.next_pos.x < 0 && ent.phys.vel.x < 0) ||
                 (ent.phys.next_pos.y < 0 && ent.phys.vel.y < 0) ||
@@ -142,26 +143,48 @@ namespace gin
                 
                 ent.phys.collide_dir.x = ent.phys.dir.x * -1;
                 ent.phys.collide_dir.y = ent.phys.dir.y * -1;
-            }
+            }*/
 
-            /*
-            // Wall tile checking
-            Vec2i ntile = ent.phys.tile_pos + ent.phys.dir;
-            const auto& opt_chunk = chunks[ent.phys.chunk_pos.x][ent.phys.chunk_pos.y];
+            Vec2i ntile;
+            ntile.x = ent.phys.next_pos.x / TILE_PIXELS;
+            ntile.y = ent.phys.next_pos.y / TILE_PIXELS;
+
+            Vec2i cpos;
+            cpos.x = ntile.x / CHUNK_TILES;
+            cpos.y = ntile.y / CHUNK_TILES;
+            const auto& opt_chunk = chunks[cpos.x][cpos.y];
             if (opt_chunk.has_value())
             {
                 const auto& chunk = opt_chunk.value();
                 Vec2i nltile{ntile.x % CHUNK_TILES, ntile.y % CHUNK_TILES};
-                int tile_id = chunk.tiles[nltile.x][nltile.y];
-                const auto& td = world_tileset.tiles.at(tile_id);
-                if (td.is_wall)
-                {
-                    ent.phys.next_pos = ent.phys.pos;
+                int tidx = (nltile.y * CHUNK_TILES) + nltile.x;
 
-                    ent.phys.collide_dir.x = ent.phys.dir.x * -1;
-                    ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+                int tile_id = chunk.layers[0][tidx];
+                if (tile_id > 0)
+                {
+                    const auto& td = world_tileset.tiles.at(tile_id);
+                    if (td.is_wall)
+                    {
+                        ent.phys.next_pos = ent.phys.pos;
+
+                        ent.phys.collide_dir.x = ent.phys.dir.x * -1;
+                        ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+                    }
                 }
-            }*/
+
+                tile_id = chunk.layers[1][tidx];
+                if (tile_id > 0)
+                {
+                    const auto& td = world_tileset.tiles.at(tile_id);
+                    if (td.is_wall)
+                    {
+                        ent.phys.next_pos = ent.phys.pos;
+
+                        ent.phys.collide_dir.x = ent.phys.dir.x * -1;
+                        ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+                    }
+                }
+            }
         }
 
         // Move entities
