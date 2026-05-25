@@ -27,7 +27,7 @@ namespace gin
         // Bind Lua functions
         sol::table L_mix = ((get_L()["gin"]).get<sol::table>())["mix"];
         L_mix["play_sfx"] = [&](const char* path)
-            { 
+            {
                 auto& sfx = sfxs.at(path);
                 Mix_PlayChannel(-1, sfx.get(), 0);
             };

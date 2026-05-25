@@ -22,8 +22,8 @@ namespace gin
         L.do_file("scripts/main.lua");
         L_gin["init"]();
 
-        gui.view.w = 1280;
-        gui.view.h = 960;
+
+        SDL_GetWindowSize(gfx.window.get(), &gui.view.w, &gui.view.h);
         auto L_gui = L_gin["gui"].get<sol::table>();
         L_gui["toggle_pause"] = [&]()
             {
@@ -42,8 +42,6 @@ namespace gin
         game.chunks = load_chunks(world_tileset);
 
         gfx.init_overmap_texture(game.chunks, world_tileset);
-
-        L_gin["on_world_load"]();
 
         return true;
     }

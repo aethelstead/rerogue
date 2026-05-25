@@ -145,6 +145,10 @@ function Base:attack()
     end
 end
 
+function Base:on_interact()
+    
+end
+
 function Base:tick(dt)
     local ms = math.floor(dt * 1000)
 end

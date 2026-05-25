@@ -5,7 +5,7 @@ local player = {}
 function gin.init()
     -- init gfx
     gin.gfx.set_window_title('rerogue')
-    gin.gfx.resize_window(1280, 960)
+    gin.gfx.resize_window(1600, 1200)
     gin.gfx.set_vsync(true)
 
     -- init mix
@@ -13,14 +13,16 @@ function gin.init()
     gin.mix.set_sfx_vol(gin.mix.MAX_VOL)
     gin.mix.set_bgm_vol(gin.mix.MAX_VOL)
     --gin.mix.mute()
+
+    player = gin.spawn_entity("player", 230, 230)
+
+
+    local e = gin.spawn_entity('door', 230, 232)
+    gin.set_sprite_animation(e.eid, 'door_closed')
 end
 
 function gin.update()
 
-end
-
-function gin.on_world_load()
-    player = gin.spawn_entity("player", 70, 70)
 end
 
 function gin.io.key_down(key, is_repeat)

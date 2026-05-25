@@ -10,7 +10,7 @@ M.tiles = {}
 M.tiles[1] = { is_wall = false, frames = { 1 } }
 M.tiles[2] = { is_wall = false, frames = { 2 } }
 M.tiles[3] = { is_wall = true,  frames = { 3 } }
-M.tiles[4] = { is_wall = false, frames = { 4 } }
+M.tiles[4] = { is_wall = true, frames = { 4 } }
 M.tiles[5] = { is_wall = false, frames = { 5 } }
 M.tiles[6] = { is_wall = false, frames = { 6 } }
 M.tiles[7] = { is_wall = false, frames = { 7 } }

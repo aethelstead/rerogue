@@ -9,13 +9,18 @@ function Rat:new()
     local obj = Base:new()
 
     obj.archetype = 'rat'
-    obj.sprite.tileset_key = 'rat'
+    obj.tileset_key = 'rat'
 
-    obj.stats.max_hp = 5
-    obj.hp = obj.stats.max_hp
+    --obj.stats.max_hp = 5
+    --obj.hp = obj.stats.max_hp
 
     setmetatable(obj, Rat)
     return obj
+end
+
+function Rat:on_interact()
+    print('The Rat ignored you.')
+    self.face_west(self)
 end
 
 return Rat

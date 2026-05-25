@@ -53,8 +53,9 @@ int main(int argc, char** argv)
         const auto& player = state->game.ents.at(state->game.player_eid);
         const auto& ppos = player.phys.pos;
         const auto& npos = player.phys.next_pos;
+        const auto& tpos = player.phys.tile_pos;
         state->gfx.draw_text(std::format("PlayerPos:\t\t{:.2f}, {:.2f}", ppos.x, ppos.y), "consola_small", 10, 50);
-        state->gfx.draw_text(std::format("NextPos:\t\t\t{:.2f}, {:.2f}", npos.x, npos.y), "consola_small", 10, 70);
+        state->gfx.draw_text(std::format("TilePos:\t\t\t{}, {}", tpos.x, tpos.y), "consola_small", 10, 70);
 
         SDL_RenderPresent(state->gfx.renderer.get());
     }

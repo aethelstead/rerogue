@@ -11,7 +11,6 @@ gin = {
     init = function() end,
     update = function() end,
 
-    on_game_load = function() end,
     on_input = function(key, pad) end,
 
     pause_game = function() end,
@@ -20,8 +19,9 @@ gin = {
     reap_entity = function(eid) end,
 
     set_sprite_animation = function(eid, anim_key) end,
-    set_phys_busy = function (eid, nframes) end,
+    set_phys_busy = function(eid, nframes) end,
     is_phys_busy = function(eid) return false end,
+    get_opponent = function(eid) return nil end,
 
     gfx = {
         get_window_title = function() return '' end,

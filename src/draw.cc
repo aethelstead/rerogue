@@ -44,13 +44,10 @@ namespace gin
                     const auto& chunk = game.chunks[chunkpos.x][chunkpos.y];
                     if (chunk.has_value())
                     {
-                        // Draw all layers
-                        int lyIdx = 0;
-                        for (const auto& layer : chunk->layers)
-                        {
-                            Vec2i topleft{ x * CHUNK_PIXELS, y * CHUNK_PIXELS };
-                            draw_chunk_tiles(topleft, chunk.value(), texture, tileset, lyIdx++);
-                        }
+                        // Draw all layers below entities
+                        Vec2i topleft{ x * CHUNK_PIXELS, y * CHUNK_PIXELS };
+                        draw_chunk_tiles(topleft, chunk.value(), texture, tileset, 0);
+                        draw_chunk_tiles(topleft, chunk.value(), texture, tileset, 1);
                     }
                 }
 
@@ -61,6 +58,28 @@ namespace gin
         }
         
         draw_sprites(textures, tilesets);
+
+        chunkpos = Vec2i{ game.camera.x / CHUNK_PIXELS, game.camera.y / CHUNK_PIXELS };
+        for (int y = 0; y < SQRT_VIEW_CHUNKS; ++y)
+        {
+            for (int x = 0; x < SQRT_VIEW_CHUNKS; ++x)
+            {
+                if (chunkpos.x < WORLD_CHUNKS && chunkpos.y < WORLD_CHUNKS)
+                {
+                    const auto& chunk = game.chunks[chunkpos.x][chunkpos.y];
+                    if (chunk.has_value())
+                    {
+                        // Draw all layers below entities
+                        Vec2i topleft{ x * CHUNK_PIXELS, y * CHUNK_PIXELS };
+                        draw_chunk_tiles(topleft, chunk.value(), texture, tileset, 2);
+                    }
+                }
+
+                chunkpos.x++;
+            }
+            chunkpos.y++;
+            chunkpos.x = prev_chunkpos.x;
+        }
     }
 
     void State::draw_chunk_tiles(Vec2i& topleft, const WorldChunk& chunk, const Texture& texture, const Tileset& tileset, int lyIdx)
@@ -201,14 +220,15 @@ namespace gin
     void State::draw_overmap()
     {
         SDL_Rect map_rect{ 
-            (gui.view.w / 2) - 320, 
-            (gui.view.h / 2) - 320, 
-            640, 
-            640 
+            (gui.view.w / 2) - (1024 / 2), 
+            (gui.view.h / 2) - (1024 / 2), 
+            1024, 
+            1024 
         };
         const auto& texture = gfx.textures.at("_overmap");
         SDL_RenderCopy(gfx.renderer.get(), texture.get(), nullptr, &map_rect);
 
+        /*
         const auto& ent = game.ents.at(game.player_eid);
         SDL_Rect mp_rect{ 
             map_rect.x + (ent.phys.chunk_pos.x * 20), 
@@ -224,6 +244,6 @@ namespace gin
         };
         SDL_SetRenderDrawColor(gfx.renderer.get(), 0xaa, 0xaa, 0, 0xff);
         SDL_RenderDrawRect(gfx.renderer.get(), &mp_rect);
-        SDL_RenderFillRect(gfx.renderer.get(), &mp_rect2);
+        SDL_RenderFillRect(gfx.renderer.get(), &mp_rect2);*/
     }
 }

@@ -25,6 +25,8 @@ namespace gin
         bool in_sim = false;
         int busy_frames = 0;
 
+        EntityId opp_eid = 0;
+
         EntityPhysics(){}
 
         EntityPhysics(Vec2i tpos, Vec2i d, double spd)

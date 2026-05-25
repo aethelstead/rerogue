@@ -70,6 +70,18 @@ namespace gin
                 auto& ent = ents.at(eid);
                 return (ent.phys.busy_frames > 0);
             };
+        L_gin["get_opponent"] = [&](EntityId eid)
+            {
+                sol::object res = sol::nil;
+                const auto& ent = ents.at(eid);
+                if (ent.phys.opp_eid > 0)
+                {
+                    const auto& opp = ents.at(ent.phys.opp_eid);
+                    res = opp.table;
+                }
+
+                return res;
+            };
 
         std::println("game was init.");
     }
@@ -131,24 +143,24 @@ namespace gin
 
             // Reset the collision from last frame
             ent.phys.collide_dir = Vec2i::zero();
-
-            /*
+            ent.phys.opp_eid = 0;
+            
             // Map bounds checking
-            if ((ent.phys.next_pos.x < 0 && ent.phys.vel.x < 0) ||
+            /*if ((ent.phys.next_pos.x < 0 && ent.phys.vel.x < 0) ||
                 (ent.phys.next_pos.y < 0 && ent.phys.vel.y < 0) ||
                 (ent.phys.next_pos.x > WORLD_PIXELS - TILE_PIXELS && ent.phys.vel.x > 0) ||
                 (ent.phys.next_pos.y > WORLD_PIXELS - TILE_PIXELS && ent.phys.vel.y > 0))
             {
                 ent.phys.next_pos = ent.phys.pos;
                 
-                ent.phys.collide_dir.x = ent.phys.dir.x * -1;
-                ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+                ent.phys.collide_dir.x = ent.phys.vel.x * -1;
+                ent.phys.collide_dir.y = ent.phys.vel.y * -1;
             }*/
 
+            // Wall tile checking
             Vec2i ntile;
             ntile.x = ent.phys.next_pos.x / TILE_PIXELS;
             ntile.y = ent.phys.next_pos.y / TILE_PIXELS;
-
             Vec2i cpos;
             cpos.x = ntile.x / CHUNK_TILES;
             cpos.y = ntile.y / CHUNK_TILES;
@@ -167,8 +179,8 @@ namespace gin
                     {
                         ent.phys.next_pos = ent.phys.pos;
 
-                        ent.phys.collide_dir.x = ent.phys.dir.x * -1;
-                        ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+                        ent.phys.collide_dir.x = ent.phys.vel.x * -1;
+                        ent.phys.collide_dir.y = ent.phys.vel.y * -1;
                     }
                 }
 
@@ -180,9 +192,36 @@ namespace gin
                     {
                         ent.phys.next_pos = ent.phys.pos;
 
-                        ent.phys.collide_dir.x = ent.phys.dir.x * -1;
-                        ent.phys.collide_dir.y = ent.phys.dir.y * -1;
+                        ent.phys.collide_dir.x = ent.phys.vel.x * -1;
+                        ent.phys.collide_dir.y = ent.phys.vel.y * -1; 
                     }
+                }
+            }
+
+            Vec2i ntile2{ 
+                ent.phys.tile_pos.x + ent.phys.dir.x,
+                ent.phys.tile_pos.y + ent.phys.dir.y
+            };
+            // Other entities checking
+            for (const auto& [opp_eid, opp_ent] : ents)
+            {
+                if (eid == opp_eid || !ent.phys.in_sim)
+                    continue;
+
+                if (ntile == opp_ent.phys.tile_pos)
+                {
+                    ent.phys.next_pos = ent.phys.pos;
+
+                    ent.phys.collide_dir.x = ent.phys.vel.x * -1;
+                    ent.phys.collide_dir.y = ent.phys.vel.y * -1;
+                    
+                    ent.phys.opp_eid = opp_eid;
+                }
+
+
+                if (ntile2 == opp_ent.phys.tile_pos)
+                {
+                    ent.phys.opp_eid = opp_eid;
                 }
             }
         }

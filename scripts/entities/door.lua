@@ -10,8 +10,8 @@ function Door:new()
 
     obj.archetype = 'door'
 
-    obj.sprite.tileset_key = 'world'
-    obj.sprite.anim_key = 'door_closed'
+    obj.tileset_key = 'world'
+    --obj.anim_key = 'door_closed'
 
     obj.open = false
 
@@ -19,18 +19,16 @@ function Door:new()
     return obj
 end
 
-function Door:interact()
+function Door:on_interact()
+    self.open = not self.open
+
     if self.open then
-        self.open = false
-        self.sprite.set_animation('door_closed')
-        self.collision.is_wall = true
-    else 
-        self.open = true
-        self.sprite.set_animation('door_open')
-        self.collision.is_wall = false
+        gin.set_sprite_animation(self.eid, 'door_closed')
+    else
+        gin.set_sprite_animation(self.eid, 'door_open')
     end
 
-    G.play_sfx('assets/sfx/caseOpen.wav')
+    gin.mix.play_sfx('assets/sfx/caseOpen.wav')
 end
 
 return Door

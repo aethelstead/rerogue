@@ -9,11 +9,15 @@ function Crow:new()
     local obj = Base:new()
 
     obj.archetype = 'crow'
-    
-    obj.sprite.tileset_key = 'crow'
+    obj.tileset_key = 'crow'
 
     setmetatable(obj, Crow)
     return obj
+end
+
+function Crow:on_interact()
+    print('The Crow ignored you.')
+    self.face_west(self)
 end
 
 return Crow

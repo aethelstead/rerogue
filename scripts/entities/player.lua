@@ -18,7 +18,10 @@ function Player:new()
 end
 
 function Player:interact()
-    print("Player interact")
+    local opp = gin.get_opponent(self.eid)
+    if opp ~= nil then
+        opp.on_interact(opp)
+    end
 end
 
 return Player

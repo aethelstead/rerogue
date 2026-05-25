@@ -208,9 +208,47 @@ namespace gin
 
     void GfxState::init_overmap_texture(const ChunkMap& chunks, const Tileset& world_tileset)
     {
-        auto surface = Surface(create_surface(WORLD_CHUNKS, WORLD_CHUNKS), SDL_FreeSurface);
+        auto surface = Surface(create_surface(WORLD_TILES, WORLD_TILES), SDL_FreeSurface);
         uint32_t* pixels = (uint32_t*)surface->pixels;
 
+        for (int y = 0; y < WORLD_TILES; ++y)
+        {
+            for (int x = 0; x < WORLD_TILES; ++x)
+            {
+                int cx = x / CHUNK_TILES;
+                int cy = y / CHUNK_TILES;
+                const auto& opt_chunk = chunks[cx][cy];
+                if (!opt_chunk.has_value())
+                    continue;
+                
+                const auto& chunk = opt_chunk.value();
+
+                int lx = x % CHUNK_TILES;
+                int ly = y % CHUNK_TILES;
+                int tidx = (ly * CHUNK_TILES) + lx;
+
+                size_t pxidx = (y * surface->pitch / 4) + x;
+                uint32_t colour = 0xff000000; // Black
+
+                int tv = chunk.layers[1][tidx];
+                if (tv == 0)
+                    tv = chunk.layers[0][tidx];
+
+                if (tv == 1)
+                    colour = 0xff006600; // Light green
+                else if (tv == 5)
+                    colour = 0xff0000ff; // Red
+                else if (tv == 9)
+                    colour = 0xffaa0000; // Blue
+                else
+                    colour = 0xff003300; // Dark green
+                
+                
+                pixels[pxidx] = colour;
+            }
+        }
+
+        /*
         for (int y = 0; y < WORLD_CHUNKS; ++y)
         {
             for (int x = 0; x < WORLD_CHUNKS; ++x)
@@ -218,23 +256,22 @@ namespace gin
                 size_t idx = (y * surface->pitch / 4) + x;
 
                 uint32_t colour = 0xff000000; // Black
-                /*
                 const auto& opt_chunk = chunks[x][y];
                 if (opt_chunk.has_value())
                 {
                     auto& chunk = opt_chunk.value();
-                    int v = chunk.layers[0][0];
+                    //int v = chunk.layers[0][0];
                     if (chunk.type == "overworld")
                         colour = 0xff006600; // Forest green
                     else if (chunk.type == "town")
                         colour = 0xff444444; // Grey
                     else if (chunk.type == "sea")
                         colour = 0xffaa0000; // Blue
-                }*/
+                }
 
                 pixels[idx] = colour;
             }
-        }
+        }*/
 
         textures.try_emplace(
             "_overmap",
